@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Example CV Bot Template</string>
+
+    <string name="title_activity_main">Example CV Bot Template</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_settings">Settings</string>
+
+    <string name="nav_header_title">Example CV Bot Template (Header)</string>
+    <string name="nav_header_subtitle">I\'m the subtitle!</string>
+
+    <string name="home_button_start">Start</string>
+    <string name="home_button_stop">Stop</string>
+
+    <string name="bot_start">Start</string>
+    <string name="bot_stop">Stop</string>
+
+    <string name="accessibility_service_label">Accessibility Service for Example CV Bot Template</string>
+    <string name="accessibility_service_description">Example description for this service.</string>
+    <string name="accessibility_service_action">Stop Bot</string>
+
+    <string name="go_to_settings">Go to Settings</string>
+
+    <string name="accessibility_disabled">Accessibility Service Currently Disabled</string>
+    <string name="accessibility_disabled_message">This app requires its Accessibility Service to be turned on to allow the bot to navigate
+        through the game.</string>
+
+    <string name="overlay_disabled">Missing Overlay Permission</string>
+    <string name="overlay_disabled_message">This app requires that it is granted Overlay Permission to display the START/STOP Floating Action
+    Button.</string>
+</resources>

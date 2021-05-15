@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory app:title="Category 1" app:summary="Options marked with * are required">
+        <ListPreference
+            app:entries="@array/item_list_1"
+            app:entryValues="@array/item_list_1"
+            app:key="exampleListPreference1"
+            app:title="Example Picker 1*"
+            app:useSimpleSummaryProvider="true" />
+ 
+        <ListPreference
+            app:entries="@array/empty_list"
+            app:entryValues="@array/empty_list"
+            app:key="exampleListPreference2"
+            android:enabled="false"
+            app:title="Example Picker 2*"
+            app:summary="These items are populated programmatically" />
+
+        <SeekBarPreference
+            app:min="1"
+            android:max="100"
+            app:key="exampleSeekBarPreference"
+            android:enabled="false"
+            app:title="Example SeekBar"
+            app:showSeekBarValue="true"
+            app:defaultValue="1" />
+
+        <Preference
+            app:key="multiplePreference"
+            app:title="Select Option(s)"
+            app:summary="Select the Options(s) in order from highest to lowest priority." />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Category 2">
+        <CheckBoxPreference
+            app:key="debugModeCheckBox"
+            app:title="Enable Debug Mode"
+            app:summary="Allows debugging messages to be shown in the log to reveal diagnostic information and potential errors." />
+
+    </PreferenceCategory>
+</PreferenceScreen>

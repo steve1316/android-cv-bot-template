@@ -1,0 +1,84 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId "com.example.android_cv_bot_template"
+        minSdkVersion 29
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0.0"
+    }
+
+    buildTypes {
+        debug {
+            // Minifying would eliminate crucial classes necessary for twitter4j and Hoplite to function properly.
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            applicationVariants.all { variant ->
+                // Allow layout XMLs to get a reference to the application's version number.
+                variant.resValue "string", "versionName", "v" + variant.versionName
+
+                // Auto-generate the file name.
+                variant.outputs.all { output ->
+                    def versionName = defaultConfig.versionName
+                    def architecture = output.filters[0].identifier
+                    outputFileName = "v${versionName}-Example-${architecture}.apk"
+                }
+            }
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    // Instead of making a very large universal apk file, only make apk for arm64-v8a ABI as its the most common ABI.
+    splits {
+        abi {
+            enable true
+            reset()
+            include "armeabi","armeabi-v7a",'arm64-v8a',"mips","x86","x86_64",'arm64-v8a'
+            // include "arm64-v8a"
+            universalApk false
+        }
+    }
+}
+
+dependencies {
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.5.0"
+    implementation 'androidx.core:core-ktx:1.3.2'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'androidx.preference:preference-ktx:1.1.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
+
+    // OpenCV Android 4.5.1
+    implementation project(path: ':opencv')
+
+    // Google's Firebase Machine Learning OCR for Text Detection.
+    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:16.1.3'
+
+    // Hoplite to read config.yaml file.
+    implementation 'com.sksamuel.hoplite:hoplite-yaml:1.4.0'
+
+    // Twitter4j is used to connect to the Twitter API.
+    implementation 'org.twitter4j:twitter4j-stream:4.0.7'
+}
