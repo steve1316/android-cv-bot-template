@@ -88,8 +88,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
 					exampleListPreference2.isEnabled = true
 					exampleSeekBarPreference.isEnabled = true
 					
-					Log.d(TAG, "I am here")
-					
 					populateItems()
 				}
 				"exampleListPreference2" -> {
