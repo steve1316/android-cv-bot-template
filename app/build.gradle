@@ -43,7 +43,7 @@ android {
         jvmTarget = '1.8'
     }
 
-    // Instead of making a very large universal apk file, only make apk for arm64-v8a ABI as its the most common ABI.
+    // Specify which architecture to make apks for, or set universalApk to true for an all-in-one apk with increased file size.
     splits {
         abi {
             enable true
