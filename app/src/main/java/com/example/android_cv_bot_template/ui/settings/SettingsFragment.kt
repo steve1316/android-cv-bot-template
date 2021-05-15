@@ -153,7 +153,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 		if (item1 != null && item1.isNotEmpty()) {
 			exampleListPreference1.value = item1
 			exampleListPreference2.isEnabled = true
-			exampleListPreference1.summary = item1
+			// exampleListPreference1.summary = item1 // Not needed as useSimpleSummaryProvider is set to true for this ListPreference.
 			exampleSeekBarPreference.isEnabled = true
 		}
 		
