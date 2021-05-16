@@ -6,6 +6,8 @@
 
 This template project serves as a starter point for Android botting that relies on Computer Vision template matching via OpenCV and executing gestures like tapping and scrolling to accomplish a automation goal. It uses MediaProjection Service to programmatically take screenshots and the Accessibility Service to execute gestures. The framework is well annotated with documentation to serve as explanations and usage hints.
 
+<iframe src="https://player.vimeo.com/video/550041665?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="420" height="886" frameborder="0" allow="fullscreen" allowfullscreen title="Application Demo"></iframe>
+
 # Provided Features
 - A Home page that also houses the Message Log to allow the user to see informational logging messages.
 - A Settings page that utilizes SharedPreferences to share data across the application and its associated Services.
