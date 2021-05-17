@@ -23,6 +23,10 @@ https://user-images.githubusercontent.com/18709555/118407909-c933be00-b637-11eb-
 4. After building is complete, you can test the capability of this framework in the Android Studio's emulator.
 5. After you familiarized yourself with what the framework can do, you can refactor the application's package name in various parts of the project and in ```settings.gradle```.
 
+## Some things to note while developing
+1. ```ImageUtils``` class reads in images in ```.webp``` format to reduce apk file size. You can change this if you desire.
+2. All images are recommended to be categorized in separate folders inside the /assets/ folder.
+
 # Important Classes to be familiar with
 ## BotService
 - Facilitates the display and moving of the floating overlay button.
@@ -40,7 +44,8 @@ https://user-images.githubusercontent.com/18709555/118407909-c933be00-b637-11eb-
 - Automatically saves logs into text files when the bot stops.
 
 ## MyAccessibilityService
-- Starts up the Accessibility Service to allow the ```Game``` class to execute taps, scrolls, and swipes at specified (x,y) coordinates on the screen.
+- Starts up the Accessibility Service to allow the ```Game``` class to execute gestures at specified (x,y) coordinates on the screen.
+  - Supported gestures are: tap, swipe, and scroll via AccessiblityAction.
 - Note: If you suddenly encounter an error while trying to execute a gesture, it means that you must have terminated the application via Android Studio. This causes the Accessibility Service to bug out. This does not happen in regular use without interference from Android Studio or you can toggle on/off the Accessibility Service until the Toast message pops up signalling that the Service is now running.
 
 ## NotificationUtils
