@@ -47,7 +47,7 @@ https://user-images.githubusercontent.com/18709555/118407909-c933be00-b637-11eb-
 ## MyAccessibilityService
 - Starts up the Accessibility Service to allow the ```Game``` class to execute gestures at specified (x,y) coordinates on the screen.
   - Supported gestures are: tap, swipe, and scroll via AccessibilityAction.
-- Note: If you suddenly encounter an error while trying to execute a gesture, it means that you must have terminated the application via Android Studio. This causes the Accessibility Service to bug out. This does not happen in regular use without interference from Android Studio or you can toggle on/off the Accessibility Service until the Toast message pops up signalling that the Service is now running.
+- Note: If you encounter this Exception: ```kotlin.UninitializedPropertyAccessException: lateinit property instance has not been initialized```, it means that you must have terminated the application via Android Studio. This causes the Accessibility Service to bug out. This does not happen in regular use without interference from Android Studio. To fix this, you can toggle on/off the Accessibility Service until the Toast message pops back up signalling that the Service is now running properly again.
 
 ## NotificationUtils
 - Allows the bot process to create and update Notifications to notify users of the status of the bot and whether or not the bot encounters an Exception.
