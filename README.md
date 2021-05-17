@@ -18,7 +18,7 @@ https://user-images.githubusercontent.com/18709555/118407909-c933be00-b637-11eb-
 
 # Instructions
 1. Download the project and extract.
-2. Download the Android version of OpenCV and extract it into a newly created folder named ```opencv``` in the root of the project folder.
+2. Download the Android version of OpenCV and extract its ```sdk``` folder contents into a newly created folder named ```opencv``` in the root of the project folder.
 3. ```Clean Project``` and then ```Rebuild Project``` under the Build menu.
 4. After building is complete, you can test the capability of this framework in the Android Studio's emulator.
 5. After you familiarized yourself with what the framework can do, you can refactor the application's package name in various parts of the project and in ```settings.gradle```.
