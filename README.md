@@ -23,9 +23,10 @@ https://user-images.githubusercontent.com/18709555/118407909-c933be00-b637-11eb-
 4. After building is complete, you can test the capability of this framework in the Android Studio's emulator.
 5. After you familiarized yourself with what the framework can do, you can refactor the application's package name in various parts of the project and in ```settings.gradle```.
 
-## Some things to note while developing
-1. ```ImageUtils``` class reads in images in ```.webp``` format to reduce apk file size. You can change this if you desire.
-2. All images are recommended to be categorized in separate folders inside the /assets/ folder.
+### Some things to note while developing
+1. ```ImageUtils``` class reads in images in ```.webp``` format to reduce apk file size. You can change this if you wish.
+2. All images are recommended to be categorized in separate folders inside the /assets/ folder. Be sure to update the ```folderName``` variables inside the various functions in ```ImageUtils```. Or you could remove the need to organize them and just put all image assets into one place. Just make sure to update the code references to the ```folderName``` variables.
+3. When working on a horizontal screen, the coordinate axis gets flipped as well. So if your vertical orientation dimensions is 1080x2400, then the horizontal orientation dimensions gets flipped to 2400x1080.
 
 # Important Classes to be familiar with
 ## BotService
@@ -45,7 +46,7 @@ https://user-images.githubusercontent.com/18709555/118407909-c933be00-b637-11eb-
 
 ## MyAccessibilityService
 - Starts up the Accessibility Service to allow the ```Game``` class to execute gestures at specified (x,y) coordinates on the screen.
-  - Supported gestures are: tap, swipe, and scroll via AccessiblityAction.
+  - Supported gestures are: tap, swipe, and scroll via AccessibilityAction.
 - Note: If you suddenly encounter an error while trying to execute a gesture, it means that you must have terminated the application via Android Studio. This causes the Accessibility Service to bug out. This does not happen in regular use without interference from Android Studio or you can toggle on/off the Accessibility Service until the Toast message pops up signalling that the Service is now running.
 
 ## NotificationUtils
