@@ -11,6 +11,9 @@ import org.opencv.android.Utils
 import org.opencv.core.*
 import org.opencv.imgcodecs.Imgcodecs
 import org.opencv.imgproc.Imgproc
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.*
 
 /**
@@ -235,6 +238,21 @@ class ImageUtils(context: Context, private val game: Game) {
 		}
 	}
 	
+	/**
+	 * Acquire a Bitmap from the URL's image file.
+	 *
+	 * @return A new Bitmap.
+	 */
+	fun getBitmapFromURL(url: URL): Bitmap {
+		// Open up a HTTP connection to the URL.
+		val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+		connection.doInput = true
+		connection.connect()
+		
+		// Download the image from the URL.
+		val input: InputStream = connection.inputStream
+		return BitmapFactory.decodeStream(input)
+	}
 	/**
 	 * Finds the location of the specified button.
 	 *
