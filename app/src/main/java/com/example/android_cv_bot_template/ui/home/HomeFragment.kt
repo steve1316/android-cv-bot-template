@@ -58,16 +58,15 @@ class HomeFragment : Fragment() {
 		val settingsStatusTextView: TextView = homeFragmentView.findViewById(R.id.settings_status)
 		
 		val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-		val item1 = sharedPreferences.getString("item1", "")
-		val item2 = sharedPreferences.getString("item2", "")
+		val item = sharedPreferences.getString("item", "")
 		val value = sharedPreferences.getInt("value", 1)
 		val savedOptions = sharedPreferences.getString("savedOptions", "")?.split("|")
 		val debugMode = sharedPreferences.getBoolean("debugMode", false)
 		
-		settingsStatusTextView.text = "Item 1: $item1\n\nItem 2: $item2\n\nValue: $value\n\nSaved Options: $savedOptions\n\nDebug Mode: $debugMode"
+		settingsStatusTextView.text = "Item: $item\n\nValue: $value\n\nSaved Options: $savedOptions\n\nDebug Mode: $debugMode"
 		
 		// Enable the start button if the required settings have been set.
-		if ((item1 != null && item1.isNotEmpty()) and (item2 != null && item2.isNotEmpty())) {
+		if ((item != null && item.isNotEmpty())) {
 			startButton.isEnabled = true
 		}
 		

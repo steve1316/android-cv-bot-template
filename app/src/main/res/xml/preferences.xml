@@ -3,19 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory app:title="Category 1" app:summary="Options marked with * are required">
         <ListPreference
-            app:entries="@array/item_list_1"
-            app:entryValues="@array/item_list_1"
-            app:key="exampleListPreference1"
+            app:entries="@array/item_list"
+            app:entryValues="@array/item_list"
+            app:key="exampleListPreference"
             app:title="Example Picker 1*"
             app:useSimpleSummaryProvider="true" />
- 
-        <ListPreference
-            app:entries="@array/empty_list"
-            app:entryValues="@array/empty_list"
-            app:key="exampleListPreference2"
-            android:enabled="false"
-            app:title="Example Picker 2*"
-            app:summary="These items are populated programmatically" />
 
         <SeekBarPreference
             app:min="1"

@@ -71,32 +71,18 @@ class SettingsFragment : PreferenceFragmentCompat() {
 	
 	// This listener is triggered whenever the user changes a Preference setting in the Settings Page.
 	private val onSharedPreferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
-		val exampleListPreference1: ListPreference = findPreference("exampleListPreference1")!!
-		val exampleListPreference2: ListPreference = findPreference("exampleListPreference2")!!
+		val exampleListPreference: ListPreference = findPreference("exampleListPreference")!!
 		val exampleSeekBarPreference: SeekBarPreference = findPreference("exampleSeekBarPreference")!!
 		val debugModeCheckBox: CheckBoxPreference = findPreference("debugModeCheckBox")!!
 		
 		if (key != null) {
 			// Note that is no need to handle the Preference that allows multiple selection here as it is already handled in its own function.
 			when (key) {
-				"exampleListPreference1" -> {
+				"exampleListPreference" -> {
 					sharedPreferences.edit {
-						putString("item1", exampleListPreference1.value)
+						putString("item", exampleListPreference.value)
 						commit()
 					}
-					
-					exampleListPreference2.isEnabled = true
-					exampleSeekBarPreference.isEnabled = true
-					
-					populateItems()
-				}
-				"exampleListPreference2" -> {
-					sharedPreferences.edit {
-						putString("item2", exampleListPreference2.value)
-						commit()
-					}
-					
-					exampleListPreference2.summary = exampleListPreference2.value
 				}
 				"exampleSeekBarPreference" -> {
 					sharedPreferences.edit {
@@ -134,53 +120,28 @@ class SettingsFragment : PreferenceFragmentCompat() {
 		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 		
 		// Grab the saved preferences from the previous time the user used the app.
-		val item1 = sharedPreferences.getString("item1", "")
-		val item2 = sharedPreferences.getString("item2", "")
+		val item1 = sharedPreferences.getString("item", "")
 		val value = sharedPreferences.getInt("value", 1)
 		val debugMode = sharedPreferences.getBoolean("debugMode", false)
 		
 		// Get references to the Preference components.
-		val exampleListPreference1: ListPreference = findPreference("exampleListPreference1")!!
-		val exampleListPreference2: ListPreference = findPreference("exampleListPreference2")!!
+		val exampleListPreference: ListPreference = findPreference("exampleListPreference")!!
 		val exampleSeekBarPreference: SeekBarPreference = findPreference("exampleSeekBarPreference")!!
 		val debugModeCheckBox: CheckBoxPreference = findPreference("debugModeCheckBox")!!
 		
-		// Now set the following values from the shared preferences. Work downwards through the Preferences and make the next ones enabled to direct user's attention as they go through the settings
-		// down the page.
+		// Now set the following values from the shared preferences.
 		
 		if (item1 != null && item1.isNotEmpty()) {
-			exampleListPreference1.value = item1
-			exampleListPreference2.isEnabled = true
-			// exampleListPreference1.summary = item1 // Not needed as useSimpleSummaryProvider is set to true for this ListPreference.
-			exampleSeekBarPreference.isEnabled = true
-		}
-		
-		if (item2 != null && item2.isNotEmpty()) {
-			populateItems()
-			exampleListPreference2.value = item2
-			exampleListPreference2.isEnabled = true
-			exampleListPreference2.summary = item2
+			exampleListPreference.value = item1
 			exampleSeekBarPreference.isEnabled = true
 		}
 		
 		exampleSeekBarPreference.value = value
-		
 		debugModeCheckBox.isChecked = debugMode
 		
 		createMultiplePickerAlertDialog()
 		
 		Log.d(TAG, "Preferences created successfully.")
-	}
-	
-	/**
-	 * Example function of populating a ListPreference programmatically.
-	 */
-	private fun populateItems() {
-		val newEntries = mutableListOf<CharSequence>("Hello", "World")
-		
-		val exampleListPreference2: ListPreference = findPreference("exampleListPreference2")!!
-		exampleListPreference2.entries = newEntries.toTypedArray()
-		exampleListPreference2.entryValues = newEntries.toTypedArray()
 	}
 	
 	/**
@@ -286,30 +247,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
 			builder.create().show()
 			
 			true
-		}
-	}
-	
-	/**
-	 * Reset the Picker 1's values stored in the SharedPreferences.
-	 */
-	private fun resetPicker1SharedPreference() {
-		val exampleListPreference1: ListPreference = findPreference("exampleListPreference1")!!
-		exampleListPreference1.value = null
-		sharedPreferences.edit {
-			remove("item1")
-			commit()
-		}
-	}
-	
-	/**
-	 * Reset the Picker 2's values stored in the SharedPreferences.
-	 */
-	private fun resetPicker2SharedPreference() {
-		val exampleListPreference2: ListPreference = findPreference("exampleListPreference2")!!
-		exampleListPreference2.value = null
-		sharedPreferences.edit {
-			remove("item2")
-			commit()
 		}
 	}
 }

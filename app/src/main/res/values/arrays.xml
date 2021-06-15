@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="empty_list">
-    </string-array>
-
-    <string-array name="item_list_1">
+    <string-array name="item_list">
         <item>Option Item 1</item>
         <item>Option Item 2</item>
         <item>Option Item 3</item>
