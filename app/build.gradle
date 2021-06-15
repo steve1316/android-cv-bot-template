@@ -75,4 +75,7 @@ dependencies {
 
     // Google's Firebase Machine Learning OCR for Text Detection.
     implementation 'com.google.android.gms:play-services-mlkit-text-recognition:16.1.3'
+
+    // Tesseract4Android for OCR text recognition.
+    implementation 'cz.adaptech.android:tesseract4android:2.1.1'
 }

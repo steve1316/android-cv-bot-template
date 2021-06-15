@@ -8,10 +8,14 @@ import android.util.Log
 import com.example.android_cv_bot_template.bot.Game
 import com.example.android_cv_bot_template.ui.settings.SettingsFragment
 import com.google.mlkit.vision.text.TextRecognition
+import com.googlecode.tesseract.android.TessBaseAPI
 import org.opencv.android.Utils
 import org.opencv.core.*
 import org.opencv.imgcodecs.Imgcodecs
 import org.opencv.imgproc.Imgproc
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
@@ -28,6 +32,8 @@ class ImageUtils(context: Context, private val game: Game) {
 	private val textRecognizer = TextRecognition.getClient()
 	
 	private val matchMethod: Int = Imgproc.TM_CCOEFF_NORMED
+	
+	private val tessBaseAPI: TessBaseAPI
 	
 	private var debugMode: Boolean = false
 	
@@ -53,6 +59,10 @@ class ImageUtils(context: Context, private val game: Game) {
 		
 		// Now determine if Debug Mode is turned on for more informational logging messages.
 		debugMode = SettingsFragment.getBooleanSharedPreference(myContext, "debugMode")
+		
+		// Uncomment the below line to initialize Tesseract for the purposes of OCR text recognition.
+		// initTesseract("SET FILE NAME OF .TRAINEDDATA FOR TESSERACT INITIALIZATION HERE")
+		tessBaseAPI = TessBaseAPI()
 	}
 	
 	/**
@@ -402,7 +412,7 @@ class ImageUtils(context: Context, private val game: Game) {
 	/**
 	 * Perform OCR text detection.
 	 */
-	fun findText(templateName: String) {
+	fun findTextGoogleMLKit(templateName: String) {
 		// Read up on Google's ML Kit at https://developers.google.com/ml-kit/vision/text-recognition/android and my
 		// usage of it at https://github.com/steve1316/granblue-automation-android/blob/main/app/src/main/java/com/steve1316/granblueautomation_android/utils/ImageUtils.kt for a better
 		// understanding of how to do OCR detection.
@@ -433,5 +443,93 @@ class ImageUtils(context: Context, private val game: Game) {
 			
 			return true
 		}
+	}
+	
+	/**
+	 * Initialize Tesseract for future OCR operations. Make sure to put your .traineddata inside the root of the /assets/ folder.
+	 *
+	 * @param traineddataFileName The file name including its extension for the .traineddata of Tesseract.
+	 */
+	private fun initTesseract(traineddataFileName: String) {
+		val externalFilesDir: File? = myContext.getExternalFilesDir(null)
+		val tempDirectory: String = externalFilesDir?.absolutePath + "/tesseract/tessdata/"
+		val newTempDirectory = File(tempDirectory)
+		
+		// If the /files/temp/ folder does not exist, create it.
+		if (!newTempDirectory.exists()) {
+			val successfullyCreated: Boolean = newTempDirectory.mkdirs()
+			
+			// If the folder was not able to be created for some reason, log the error and stop the MediaProjection Service.
+			if (!successfullyCreated) {
+				game.printToLog("[ERROR] Failed to create the /files/tesseract/tessdata/ folder.", MESSAGE_TAG = TAG, isError = true)
+			} else {
+				game.printToLog("[INFO] Successfully created /files/tesseract/tessdata/ folder.", MESSAGE_TAG = TAG)
+			}
+		} else {
+			game.printToLog("[INFO] /files/tesseract/tessdata/ folder already exists.", MESSAGE_TAG = TAG)
+		}
+		
+		// If the .traineddata is not in the application folder, copy it there from assets.
+		val trainedDataPath = File(tempDirectory, traineddataFileName)
+		if (!trainedDataPath.exists()) {
+			try {
+				game.printToLog("[INFO] Starting Tesseract initialization.", MESSAGE_TAG = TAG)
+				val input = myContext.assets.open(traineddataFileName)
+				
+				val output = FileOutputStream("$tempDirectory/$traineddataFileName")
+				
+				val buffer = ByteArray(1024)
+				var read: Int
+				while (input.read(buffer).also { read = it } != -1) {
+					output.write(buffer, 0, read)
+				}
+				
+				input.close()
+				output.flush()
+				output.close()
+				game.printToLog("[INFO] Finished Tesseract initialization.", MESSAGE_TAG = TAG)
+			} catch (e: IOException) {
+				game.printToLog("[ERROR] IO EXCEPTION: $e", MESSAGE_TAG = TAG, isError = true)
+			}
+		}
+	}
+	
+	/**
+	 * Perform OCR text detection using Tesseract along with some image manipulation via thresholding to make the cropped screenshot black and white using OpenCV.
+	 *
+	 * @return The detected String in the cropped region.
+	 */
+	fun findTextTesseract(): String {
+		val (_, _) = getBitmaps("", "")
+		
+		tessBaseAPI.init(myContext.getExternalFilesDir(null)?.absolutePath + "/tesseract/", "jpn")
+		game.printToLog("[INFO] Training file loaded.\n", MESSAGE_TAG = TAG)
+		
+		// Read in the new screenshot and crop it.
+		var cvImage = Imgcodecs.imread("${matchFilePath}/source.png", Imgcodecs.IMREAD_GRAYSCALE)
+		cvImage = cvImage.submat(0, 500, 0, 500)
+		
+		// Thresh the grayscale cropped image to make black and white.
+		val bwImage = Mat()
+		Imgproc.threshold(cvImage, bwImage, 200.0, 255.0, Imgproc.THRESH_BINARY)
+		Imgcodecs.imwrite("$matchFilePath/tesseract_result.png", bwImage)
+		
+		val resultBitmap = BitmapFactory.decodeFile("$matchFilePath/tesseract_result.png")
+		tessBaseAPI.setImage(resultBitmap)
+		
+		// Set the Page Segmentation Mode to '--psm 7' or "Treat the image as a single text line" according to https://tesseract-ocr.github.io/tessdoc/ImproveQuality.html#page-segmentation-method
+		tessBaseAPI.pageSegMode = TessBaseAPI.PageSegMode.PSM_SINGLE_LINE
+		
+		var result = "empty!"
+		try {
+			// Finally, detect text on the cropped region.
+			result = tessBaseAPI.utF8Text
+		} catch (e: Exception) {
+			game.printToLog("[ERROR] Cannot perform OCR: $e", MESSAGE_TAG = TAG, isError = true)
+		}
+		
+		tessBaseAPI.end()
+		
+		return result
 	}
 }

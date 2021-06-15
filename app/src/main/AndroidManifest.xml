@@ -12,6 +12,10 @@
     <!--Grants permission to download and update the application's Firebase Machine Learning OCR.-->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!--Grants permission to read and write to external storage for Tesseract's traineddata file.-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
