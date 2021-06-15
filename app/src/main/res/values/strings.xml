@@ -16,7 +16,8 @@
     <string name="bot_stop">Stop</string>
 
     <string name="accessibility_service_label">Accessibility Service for Example CV Bot Template</string>
-    <string name="accessibility_service_description">Example description for this service.</string>
+    <string name="accessibility_service_description">NOTE: If the Toast message does not pop up immediately, disable and enable this again. Seeing
+        the Toast message appear on the screen indicates that the Accessibility Service is now running!</string>
     <string name="accessibility_service_action">Stop Bot</string>
 
     <string name="go_to_settings">Go to Settings</string>

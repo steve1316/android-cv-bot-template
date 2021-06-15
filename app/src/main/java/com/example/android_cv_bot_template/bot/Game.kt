@@ -87,6 +87,8 @@ class Game(private val myContext: Context) {
 			printToLog("\n[INFO] I am starting here!")
 		}
 		
+		printToLog("\n[INFO] I am ending here!")
+		
 		return true
 	}
 }

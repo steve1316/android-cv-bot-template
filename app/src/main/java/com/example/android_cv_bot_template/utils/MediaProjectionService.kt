@@ -234,6 +234,9 @@ class MediaProjectionService : Service() {
 		return START_NOT_STICKY
 	}
 	
+	/**
+	 * Custom Callback for when the user rotates their device from horizontal to vertical and vice-versa.
+	 */
 	private inner class OrientationChangeCallback(context: Context) : OrientationEventListener(context) {
 		private val TAG_OrientationChangeCallback: String = "Example_OrientationChangeCallback"
 		
