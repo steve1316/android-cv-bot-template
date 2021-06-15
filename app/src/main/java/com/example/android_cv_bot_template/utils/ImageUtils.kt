@@ -3,6 +3,7 @@ package com.example.android_cv_bot_template.utils
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.util.Log
 import com.example.android_cv_bot_template.bot.Game
 import com.example.android_cv_bot_template.ui.settings.SettingsFragment
@@ -253,6 +254,40 @@ class ImageUtils(context: Context, private val game: Game) {
 		val input: InputStream = connection.inputStream
 		return BitmapFactory.decodeStream(input)
 	}
+	
+	/**
+	 * Pixel search by its RGB value.
+	 *
+	 * @param bitmap Bitmap of the image to search for the specific pixel.
+	 * @param red The pixel's Red value.
+	 * @param blue The pixel's Blue value.
+	 * @param green The pixel's Green value.
+	 * @return A Pair object of the (x,y) coordinates on the Bitmap for the matched pixel.
+	 */
+	fun pixelSearch(bitmap: Bitmap, red: Int, blue: Int, green: Int): Pair<Int, Int> {
+		var x = 0
+		var y = 0
+		
+		// Iterate through each pixel in the Bitmap and compare RGB values.
+		while (x < bitmap.width) {
+			while (y < bitmap.height) {
+				val pixel = bitmap.getPixel(x, y)
+				
+				if (Color.red(pixel) == red && Color.blue(pixel) == blue && Color.green(pixel) == green) {
+					game.printToLog("Found matching pixel at ($x, $y).", MESSAGE_TAG = TAG)
+					return Pair(x, y)
+				}
+				
+				y++
+			}
+			
+			x++
+			y = 0
+		}
+		
+		return Pair(-1, -1)
+	}
+	
 	/**
 	 * Finds the location of the specified button.
 	 *
