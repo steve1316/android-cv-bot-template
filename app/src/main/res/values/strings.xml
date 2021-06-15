@@ -28,4 +28,6 @@
     <string name="overlay_disabled">Missing Overlay Permission</string>
     <string name="overlay_disabled_message">This app requires that it is granted Overlay Permission to display the START/STOP Floating Action
     Button.</string>
+
+    <string name="go_to_github">Go to GitHub</string>
 </resources>
