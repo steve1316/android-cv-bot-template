@@ -17,13 +17,14 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import com.example.android_cv_bot_template.MainActivity
 import com.example.android_cv_bot_template.utils.MyAccessibilityService
 import com.example.android_cv_bot_template.R
 import com.example.android_cv_bot_template.utils.MediaProjectionService
 import com.example.android_cv_bot_template.utils.MessageLog
 
 class HomeFragment : Fragment() {
-	private val TAG: String = "Example_HomeFragment"
+	private val TAG: String = "[${MainActivity.loggerTag}]HomeFragment"
 	private val SCREENSHOT_PERMISSION_REQUEST_CODE: Int = 100
 	private var firstBoot = false
 	

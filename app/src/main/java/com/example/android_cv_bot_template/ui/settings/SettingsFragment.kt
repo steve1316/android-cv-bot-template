@@ -7,10 +7,11 @@ import android.os.Bundle
 import android.util.Log
 import androidx.core.content.edit
 import androidx.preference.*
+import com.example.android_cv_bot_template.MainActivity
 import com.example.android_cv_bot_template.R
 
 class SettingsFragment : PreferenceFragmentCompat() {
-	private val TAG: String = "Example_SettingsFragment"
+	private val TAG: String = "[${MainActivity.loggerTag}]SettingsFragment"
 	
 	private lateinit var sharedPreferences: SharedPreferences
 	

@@ -2,6 +2,7 @@ package com.example.android_cv_bot_template.utils
 
 import android.content.Context
 import android.util.Log
+import com.example.android_cv_bot_template.MainActivity
 import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -11,7 +12,7 @@ import java.time.format.DateTimeFormatter
  */
 class MessageLog {
 	companion object {
-		private const val TAG: String = "Example_MessageLog"
+		private val TAG: String = "[${MainActivity.loggerTag}]MessageLog"
 		var messageLog = arrayListOf<String>()
 		
 		var saveCheck = false

@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.util.Log
+import com.example.android_cv_bot_template.MainActivity
 import com.example.android_cv_bot_template.bot.Game
 import com.example.android_cv_bot_template.ui.settings.SettingsFragment
 import com.google.mlkit.vision.text.TextRecognition
@@ -25,7 +26,7 @@ import java.util.*
  * Utility functions for image processing via CV like OpenCV.
  */
 class ImageUtils(context: Context, private val game: Game) {
-	private val TAG: String = "Example_ImageUtils"
+	private val TAG: String = "[${MainActivity.loggerTag}]ImageUtils"
 	private var myContext = context
 	
 	// Initialize Google's ML OCR.
@@ -534,6 +535,9 @@ class ImageUtils(context: Context, private val game: Game) {
 		// Read in the new screenshot and crop it.
 		var cvImage = Imgcodecs.imread("${matchFilePath}/source.png", Imgcodecs.IMREAD_GRAYSCALE)
 		cvImage = cvImage.submat(0, 500, 0, 500)
+		
+		// Save the cropped image before converting it to black and white in order to troubleshoot issues related to differing device sizes and cropping.
+		Imgcodecs.imwrite("$matchFilePath/pre_tesseract_result.png", cvImage)
 		
 		// Thresh the grayscale cropped image to make black and white.
 		val bwImage = Mat()

@@ -15,6 +15,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.Toast
+import com.example.android_cv_bot_template.MainActivity
 import com.example.android_cv_bot_template.R
 import com.example.android_cv_bot_template.bot.Game
 import kotlin.concurrent.thread
@@ -27,7 +28,8 @@ import kotlin.math.roundToInt
  * https://www.tutorialspoint.com/in-android-how-to-register-a-custom-intent-filter-to-a-broadcast-receiver
  */
 class BotService : Service() {
-	private val TAG: String = "Example_BotService"
+	private var appName = ""
+	private val TAG: String = "[${MainActivity.loggerTag}]BotService"
 	private lateinit var myContext: Context
 	private lateinit var overlayView: View
 	private lateinit var overlayButton: ImageButton
@@ -67,6 +69,7 @@ class BotService : Service() {
 		super.onCreate()
 		
 		myContext = this
+		appName = myContext.getString(R.string.app_name)
 		
 		// Any Intents that wants to be received needs to have the following action attached to it to be recognized.
 		val filter = IntentFilter()
@@ -103,8 +106,8 @@ class BotService : Service() {
 					if (elapsedTime < 100L) {
 						// Update both the Notification and the overlay button to reflect the current bot status.
 						if (!isRunning) {
-							Log.d(TAG, "Bot Service for Example is now running.")
-							Toast.makeText(myContext, "Bot Service for Example is now running.", Toast.LENGTH_SHORT).show()
+							Log.d(TAG, "Bot Service for $appName is now running.")
+							Toast.makeText(myContext, "Bot Service for $appName is now running.", Toast.LENGTH_SHORT).show()
 							isRunning = true
 							NotificationUtils.updateNotification(myContext, isRunning)
 							overlayButton.setImageResource(R.drawable.ic_baseline_stop_circle_24)
@@ -124,13 +127,9 @@ class BotService : Service() {
 									newIntent.putExtra("SUCCESS", "Bot has completed successfully with no errors.")
 									sendBroadcast(newIntent)
 									
-									MessageLog.saveLogToFile(myContext)
-									Log.d(TAG, "Bot Service for Example is now stopped.")
-									isRunning = false
-									NotificationUtils.updateNotification(myContext, isRunning)
-									overlayButton.setImageResource(R.drawable.ic_baseline_play_circle_outline_24)
+									performCleanUp()
 								} catch (e: Exception) {
-									game.printToLog("Example encountered an Exception: $e", MESSAGE_TAG = TAG, isError = true)
+									game.printToLog("$appName encountered an Exception: $e", MESSAGE_TAG = TAG, isError = true)
 									
 									val newIntent = Intent("CUSTOM_INTENT")
 									if (e.toString() == "java.lang.InterruptedException") {
@@ -141,18 +140,12 @@ class BotService : Service() {
 									
 									sendBroadcast(newIntent)
 									
-									MessageLog.saveLogToFile(myContext)
+									performCleanUp()
 								}
 							}
 						} else {
 							thread.interrupt()
-							MessageLog.saveLogToFile(myContext)
-							
-							Log.d(TAG, "Bot Service for Example is now stopped.")
-							Toast.makeText(myContext, "Bot Service for Example is now stopped.", Toast.LENGTH_SHORT).show()
-							isRunning = false
-							NotificationUtils.updateNotification(myContext, isRunning)
-							overlayButton.setImageResource(R.drawable.ic_baseline_play_circle_outline_24)
+							performCleanUp()
 						}
 						
 						// Returning true here freezes the animation of the click on the button.
@@ -193,5 +186,23 @@ class BotService : Service() {
 		
 		val service = Intent(myContext, MyAccessibilityService::class.java)
 		myContext.stopService(service)
+	}
+	
+	/**
+	 * Perform cleanup upon app completion or encountering an Exception.
+	 */
+	private fun performCleanUp() {
+		// Save the message log.
+		MessageLog.saveLogToFile(myContext)
+		
+		Log.d(TAG, "Bot Service for $appName is now stopped.")
+		Toast.makeText(myContext, "Bot Service for $appName is now stopped.", Toast.LENGTH_SHORT).show()
+		isRunning = false
+		
+		// Update the app's notification with the status.
+		NotificationUtils.updateNotification(myContext, isRunning)
+		
+		// Reset the overlay button's image.
+		overlayButton.setImageResource(R.drawable.ic_baseline_play_circle_outline_24)
 	}
 }

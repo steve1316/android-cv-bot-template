@@ -2,6 +2,7 @@ package com.example.android_cv_bot_template.bot
 
 import android.content.Context
 import android.util.Log
+import com.example.android_cv_bot_template.MainActivity
 import com.example.android_cv_bot_template.utils.MyAccessibilityService
 import com.example.android_cv_bot_template.ui.settings.SettingsFragment
 import com.example.android_cv_bot_template.utils.ImageUtils
@@ -14,7 +15,7 @@ import java.util.concurrent.TimeUnit
  * Main driver for bot activity and navigation.
  */
 class Game(private val myContext: Context) {
-	private val TAG: String = "Example_Game"
+	private val TAG: String = "[${MainActivity.loggerTag}]Game"
 	
 	private var debugMode: Boolean = SettingsFragment.getBooleanSharedPreference(myContext, "debugMode")
 	

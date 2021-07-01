@@ -12,6 +12,8 @@ import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Toast
+import com.example.android_cv_bot_template.MainActivity
+import com.example.android_cv_bot_template.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
@@ -19,7 +21,8 @@ import kotlinx.coroutines.runBlocking
  * Contains the Accessibility service that will allow the bot to programmatically perform gestures on the screen.
  */
 class MyAccessibilityService : AccessibilityService() {
-	private val TAG: String = "Example_MyAccessibilityService"
+	private var appName: String = ""
+	private val TAG: String = "[${MainActivity.loggerTag}]MyAccessibilityService"
 	private lateinit var myContext: Context
 	
 	companion object {
@@ -40,9 +43,10 @@ class MyAccessibilityService : AccessibilityService() {
 	override fun onServiceConnected() {
 		instance = this
 		myContext = this
+		appName = myContext.getString(R.string.app_name)
 		
-		Log.d(TAG, "Accessibility Service for Example is now running.")
-		Toast.makeText(myContext, "Accessibility Service for Example now running.", Toast.LENGTH_SHORT).show()
+		Log.d(TAG, "Accessibility Service for $appName is now running.")
+		Toast.makeText(myContext, "Accessibility Service for $appName now running.", Toast.LENGTH_SHORT).show()
 	}
 	
 	override fun onInterrupt() {
@@ -52,8 +56,8 @@ class MyAccessibilityService : AccessibilityService() {
 	override fun onDestroy() {
 		super.onDestroy()
 		
-		Log.d(TAG, "Accessibility Service for Example is now stopped.")
-		Toast.makeText(myContext, "Accessibility Service for Example is now stopped.", Toast.LENGTH_SHORT).show()
+		Log.d(TAG, "Accessibility Service for $appName is now stopped.")
+		Toast.makeText(myContext, "Accessibility Service for $appName is now stopped.", Toast.LENGTH_SHORT).show()
 	}
 	
 	override fun onAccessibilityEvent(event: AccessibilityEvent?) {
