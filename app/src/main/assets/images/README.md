@@ -1,0 +1,1 @@
+Place image files belong to the "images" category here.
