@@ -70,13 +70,22 @@ class ImageUtils(context: Context, private val game: Game) {
 	 *
 	 * @param sourceBitmap Bitmap from the /files/temp/ folder.
 	 * @param templateBitmap Bitmap from the assets folder.
+	 * @param region Specify the region consisting of (x, y, width, height) of the source screenshot to template match. Defaults to (0, 0, 0, 0) which is equivalent to searching the full image.
 	 * @param useCannyAlgorithm Check whether or not to use Canny edge detection algorithm. Defaults to false.
+	 * @return True if a match was found. False otherwise.
 	 */
-	private fun match(sourceBitmap: Bitmap, templateBitmap: Bitmap, useCannyAlgorithm: Boolean = false): Boolean {
+	private fun match(sourceBitmap: Bitmap, templateBitmap: Bitmap, region: IntArray = intArrayOf(0, 0, 0, 0), useCannyAlgorithm: Boolean = false): Boolean {
+		// If a custom region was specified, crop the source screenshot.
+		val srcBitmap = if (!region.contentEquals(intArrayOf(0, 0, 0, 0))) {
+			Bitmap.createBitmap(sourceBitmap, region[0], region[1], region[2], region[3])
+		} else {
+			sourceBitmap
+		}
+		
 		// Create the Mats of both source and template images.
 		val sourceMat = Mat()
 		val templateMat = Mat()
-		Utils.bitmapToMat(sourceBitmap, sourceMat)
+		Utils.bitmapToMat(srcBitmap, sourceMat)
 		Utils.bitmapToMat(templateBitmap, templateMat)
 		
 		// Make the Mats grayscale for the source and the template.
@@ -138,6 +147,12 @@ class ImageUtils(context: Context, private val game: Game) {
 			// position of the top left corner of the match location.
 			matchLocation.x += (templateMat.cols() / 2)
 			matchLocation.y += (templateMat.rows() / 2)
+			
+			// If a custom region was specified, readjust the coordinates to reflect the fullscreen source screenshot.
+			if (!region.contentEquals(intArrayOf(0, 0, 0, 0))) {
+				matchLocation.x = sourceBitmap.width - (region[0] + matchLocation.x)
+				matchLocation.y = sourceBitmap.height - (region[1] + matchLocation.y)
+			}
 			
 			return true
 		} else {
@@ -299,36 +314,37 @@ class ImageUtils(context: Context, private val game: Game) {
 	}
 	
 	/**
-	 * Finds the location of the specified button.
+	 * Finds the location of the specified image from the /images/ folder inside assets.
 	 *
 	 * @param templateName File name of the template image.
 	 * @param tries Number of tries before failing. Defaults to 3.
-	 * @param suppressError Whether or not to suppress saving error messages to the log.
+	 * @param region Specify the region consisting of (x, y, width, height) of the source screenshot to template match. Defaults to (0, 0, 0, 0) which is equivalent to searching the full image.
+	 * @param suppressError Whether or not to suppress saving error messages to the log. Defaults to false.
 	 * @return Point object containing the location of the match or null if not found.
 	 */
-	fun findButton(templateName: String, tries: Int = 3, suppressError: Boolean = false): Point? {
-		val folderName = "buttons"
+	fun findImage(templateName: String, tries: Int = 3, region: IntArray = intArrayOf(0, 0, 0, 0), suppressError: Boolean = false): Point? {
+		val folderName = "images"
 		var numberOfTries = tries
 		
 		while (numberOfTries > 0) {
 			val (sourceBitmap, templateBitmap) = getBitmaps(templateName, folderName)
 			
 			if (sourceBitmap != null && templateBitmap != null) {
-				val resultFlag: Boolean = match(sourceBitmap, templateBitmap)
+				val resultFlag: Boolean = match(sourceBitmap, templateBitmap, region)
 				if (!resultFlag) {
 					numberOfTries -= 1
 					if (numberOfTries <= 0) {
 						if (!suppressError) {
-							game.printToLog("[WARNING] Failed to find the ${templateName.toUpperCase(Locale.ROOT)} button.", MESSAGE_TAG = TAG)
+							game.printToLog("[WARNING] Failed to find the ${templateName.uppercase()} button.", MESSAGE_TAG = TAG)
 						}
 						
 						return null
 					}
 					
-					Log.d(TAG, "Failed to find the ${templateName.toUpperCase(Locale.ROOT)} button. Trying again...")
+					Log.d(TAG, "Failed to find the ${templateName.uppercase()} button. Trying again...")
 					game.wait(1.0)
 				} else {
-					game.printToLog("[SUCCESS] Found the ${templateName.toUpperCase(Locale.ROOT)} at $matchLocation.", MESSAGE_TAG = TAG)
+					game.printToLog("[SUCCESS] Found the ${templateName.uppercase()} at $matchLocation.", MESSAGE_TAG = TAG)
 					return matchLocation
 				}
 			}
@@ -338,21 +354,22 @@ class ImageUtils(context: Context, private val game: Game) {
 	}
 	
 	/**
-	 * Confirms whether or not the bot is at the specified location.
+	 * Confirms whether or not the bot is at the specified location from the /headers/ folder inside assets.
 	 *
 	 * @param templateName File name of the template image.
 	 * @param tries Number of tries before failing. Defaults to 3.
+	 * @param region Specify the region consisting of (x, y, width, height) of the source screenshot to template match. Defaults to (0, 0, 0, 0) which is equivalent to searching the full image.
 	 * @param suppressError Whether or not to suppress saving error messages to the log.
 	 * @return True if the current location is at the specified location. False otherwise.
 	 */
-	fun confirmLocation(templateName: String, tries: Int = 3, suppressError: Boolean = false): Boolean {
+	fun confirmLocation(templateName: String, tries: Int = 3, region: IntArray = intArrayOf(0, 0, 0, 0), suppressError: Boolean = false): Boolean {
 		val folderName = "headers"
 		var numberOfTries = tries
 		while (numberOfTries > 0) {
 			val (sourceBitmap, templateBitmap) = getBitmaps(templateName + "_header", folderName)
 			
 			if (sourceBitmap != null && templateBitmap != null) {
-				val resultFlag: Boolean = match(sourceBitmap, templateBitmap)
+				val resultFlag: Boolean = match(sourceBitmap, templateBitmap, region)
 				if (!resultFlag) {
 					numberOfTries -= 1
 					if (numberOfTries <= 0) {
@@ -385,7 +402,7 @@ class ImageUtils(context: Context, private val game: Game) {
 	 */
 	fun findAll(templateName: String, isItem: Boolean = false): ArrayList<Point> {
 		val folderName = if (!isItem) {
-			"buttons"
+			"images"
 		} else {
 			"items"
 		}
@@ -399,7 +416,8 @@ class ImageUtils(context: Context, private val game: Game) {
 			matchAll(sourceBitmap, templateBitmap)
 		}
 		
-		// Sort the match locations by ascending y coordinates.
+		// Sort the match locations by ascending x and y coordinates.
+		matchLocations.sortBy { it.x }
 		matchLocations.sortBy { it.y }
 		
 		if (debugMode) {
@@ -423,17 +441,18 @@ class ImageUtils(context: Context, private val game: Game) {
 	 *
 	 * @param templateName File name of the template image.
 	 * @param timeout Amount of time to wait before timing out. Default is 5 seconds.
+	 * @param region Specify the region consisting of (x, y, width, height) of the source screenshot to template match. Defaults to (0, 0, 0, 0) which is equivalent to searching the full image.
 	 * @param suppressError Whether or not to suppress saving error messages to the log.
 	 * @return True if the specified image vanished from the screen. False otherwise.
 	 */
-	fun waitVanish(templateName: String, timeout: Int = 5, suppressError: Boolean = false): Boolean {
+	fun waitVanish(templateName: String, timeout: Int = 5, region: IntArray = intArrayOf(0, 0, 0, 0), suppressError: Boolean = false): Boolean {
 		game.printToLog("[INFO] Now waiting for $templateName to vanish from the screen...", MESSAGE_TAG = TAG)
 		
 		var remaining = timeout
-		if (findButton(templateName, tries = 1, suppressError = suppressError) == null) {
+		if (findImage(templateName, tries = 1, region = region, suppressError = suppressError) == null) {
 			return true
 		} else {
-			while (findButton(templateName, tries = 1, suppressError = suppressError) == null) {
+			while (findImage(templateName, tries = 1, region = region, suppressError = suppressError) == null) {
 				game.wait(1.0)
 				remaining -= 1
 				if (remaining <= 0) {
