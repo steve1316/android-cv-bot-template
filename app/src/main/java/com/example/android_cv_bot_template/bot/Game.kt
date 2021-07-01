@@ -81,6 +81,8 @@ class Game(private val myContext: Context) {
 	 * @return True if all automation goals have been met. False otherwise.
 	 */
 	fun start(): Boolean {
+		val startTime: Long = System.currentTimeMillis()
+		
 		if (debugMode) {
 			printToLog("\n[DEBUG] I am starting here but as a debugging message!")
 		} else {
@@ -88,6 +90,9 @@ class Game(private val myContext: Context) {
 		}
 		
 		printToLog("\n[INFO] I am ending here!")
+		
+		val endTime: Long = System.currentTimeMillis()
+		Log.d(TAG, "Total Runtime: ${endTime - startTime}ms")
 		
 		return true
 	}

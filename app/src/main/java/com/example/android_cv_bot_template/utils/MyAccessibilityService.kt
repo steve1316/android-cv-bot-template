@@ -69,10 +69,19 @@ class MyAccessibilityService : AccessibilityService() {
 		}
 	}
 	
-	private fun randomizeTapLocation(x: Double, y: Double, buttonName: String): Pair<Int, Int> {
+	/**
+	 * Randomizes the tap location to be within the dimensions of the specified image.
+	 *
+	 * @param x The original x location for the tap gesture.
+	 * @param y The original y location for the tap gesture.
+	 * @param folderName The folder name that the image is located under inside the assets folder.
+	 * @param imageName The name of the image to acquire its dimensions for tap location randomization.
+	 * @return Pair of integers that represent the newly randomized tap location.
+	 */
+	private fun randomizeTapLocation(x: Double, y: Double, folderName: String, imageName: String): Pair<Int, Int> {
 		// Get the Bitmap from the template image file inside the specified folder.
 		val templateBitmap: Bitmap
-		myContext.assets?.open("buttons/$buttonName.webp").use { inputStream ->
+		myContext.assets?.open("$folderName/$imageName.webp").use { inputStream ->
 			// Get the Bitmap from the template image file and then start matching.
 			templateBitmap = BitmapFactory.decodeStream(inputStream)
 		}
@@ -90,6 +99,7 @@ class MyAccessibilityService : AccessibilityService() {
 		var newY: Int
 		
 		while (true) {
+			// Start acquiring randomized coordinates at least 20% and at most 80% of the width and height until a valid set of coordinates has been acquired.
 			val newWidth: Int = ((width * 0.2).toInt()..(width * 0.8).toInt()).random()
 			val newHeight: Int = ((height * 0.2).toInt()..(height * 0.8).toInt()).random()
 			
@@ -110,21 +120,24 @@ class MyAccessibilityService : AccessibilityService() {
 	 *
 	 * @param x The x coordinate of the point.
 	 * @param y The y coordinate of the point.
-	 * @param buttonName The name of the image to tap.
+	 * @param folderName The folder name that the image is located under inside the assets folder.
+	 * @param imageName The name of the image to acquire its dimensions for tap location randomization.
 	 * @param ignoreWait Whether or not to not wait 0.5 seconds after dispatching the gesture.
 	 * @param longPress Whether or not to long press.
 	 * @param taps How many taps to execute.
 	 * @return True if the tap gesture was executed successfully. False otherwise.
 	 */
-	fun tap(x: Double, y: Double, buttonName: String, ignoreWait: Boolean = false, longPress: Boolean = false, taps: Int = 1): Boolean {
+	fun tap(x: Double, y: Double, folderName: String, imageName: String, ignoreWait: Boolean = false, longPress: Boolean = false, taps: Int = 1): Boolean {
 		// Randomize the tapping location.
-		val (newX, newY) = randomizeTapLocation(x, y, buttonName)
+		val (newX, newY) = randomizeTapLocation(x, y, folderName, imageName)
 		
+		// Construct the tap gesture.
 		val tapPath = Path().apply {
 			moveTo(newX.toFloat(), newY.toFloat())
 		}
 		
 		val gesture: GestureDescription = if (longPress) {
+			// Long press for 1000ms.
 			GestureDescription.Builder().apply {
 				addStroke(GestureDescription.StrokeDescription(tapPath, 0, 1000, true))
 			}.build()

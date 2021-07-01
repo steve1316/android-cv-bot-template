@@ -43,14 +43,14 @@ class HomeFragment : Fragment() {
 			val readyCheck = startReadyCheck()
 			if (readyCheck && !MediaProjectionService.isRunning) {
 				startProjection()
-				startButton.text = getString(R.string.bot_stop)
+				startButton.text = getString(R.string.stop)
 				
 				// This is needed because onResume() is immediately called right after accepting the MediaProjection and it has not been properly
 				// initialized yet so it would cause the button's text to revert back to "Start".
 				firstBoot = true
 			} else if (MediaProjectionService.isRunning) {
 				stopProjection()
-				startButton.text = getString(R.string.bot_start)
+				startButton.text = getString(R.string.start)
 			}
 		}
 		
@@ -79,9 +79,9 @@ class HomeFragment : Fragment() {
 		// Update the button's text depending on if the MediaProjection service is running.
 		if (!firstBoot) {
 			if (MediaProjectionService.isRunning) {
-				startButton.text = getString(R.string.bot_stop)
+				startButton.text = getString(R.string.stop)
 			} else {
-				startButton.text = getString(R.string.bot_start)
+				startButton.text = getString(R.string.start)
 			}
 		}
 		

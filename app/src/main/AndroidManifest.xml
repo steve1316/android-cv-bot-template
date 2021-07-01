@@ -13,7 +13,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!--Grants permission to read and write to external storage for Tesseract's traineddata file.-->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
@@ -45,9 +47,9 @@
         <!--The Accessibility Service that controls gestures on the screen.-->
         <service
             android:name="com.example.android_cv_bot_template.utils.MyAccessibilityService"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:foregroundServiceType="mediaProjection"
             android:label="@string/accessibility_service_label"
-            android:foregroundServiceType="mediaProjection">
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
@@ -62,8 +64,7 @@
             android:foregroundServiceType="mediaProjection" />
 
         <!--Bot Service that will automate the specified workflow.-->
-        <service
-            android:name="com.example.android_cv_bot_template.utils.BotService" />
+        <service android:name="com.example.android_cv_bot_template.utils.BotService" />
 
         <!--Receiver that will send the "STOP" Intent to MediaProjection Service when the action button on the Notification is tapped.-->
         <receiver
