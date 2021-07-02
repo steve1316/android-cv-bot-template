@@ -516,7 +516,7 @@ class ImageUtils(context: Context, private val game: Game) {
 				output.close()
 				game.printToLog("[INFO] Finished Tesseract initialization.", MESSAGE_TAG = TAG)
 			} catch (e: IOException) {
-				game.printToLog("[ERROR] IO EXCEPTION: $e", MESSAGE_TAG = TAG, isError = true)
+				game.printToLog("[ERROR] IO EXCEPTION: ${e.stackTraceToString()}", MESSAGE_TAG = TAG, isError = true)
 			}
 		}
 	}
@@ -555,7 +555,7 @@ class ImageUtils(context: Context, private val game: Game) {
 			// Finally, detect text on the cropped region.
 			result = tessBaseAPI.utF8Text
 		} catch (e: Exception) {
-			game.printToLog("[ERROR] Cannot perform OCR: $e", MESSAGE_TAG = TAG, isError = true)
+			game.printToLog("[ERROR] Cannot perform OCR: ${e.stackTraceToString()}", MESSAGE_TAG = TAG, isError = true)
 		}
 		
 		tessBaseAPI.end()
