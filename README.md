@@ -28,6 +28,10 @@ https://user-images.githubusercontent.com/18709555/118407909-c933be00-b637-11eb-
    2. Update the ```setUpdateXML()``` with the ```RAW``` link to your new update.xml.
    3. Now when a user has a lower version number compared to the latest version in your ```Releases``` page in your GitHub repo, they will be prompted with a dialog window like this:
 
+> ![i_view32_cyUHsXlLFG](https://user-images.githubusercontent.com/18709555/125871637-0a803f09-fbc3-49b9-ae39-1a77cf64bbf3.png)
+
+
+
 ### Some things to note while developing
 1. ```ImageUtils``` class reads in images in ```.webp``` format to reduce apk file size. You can change this if you wish.
 2. All images are recommended to be categorized in separate folders inside the /assets/ folder. Be sure to update the ```folderName``` variables inside the various functions in ```ImageUtils```. Or you could remove the need to organize them and just put all image assets into one place. Just make sure to update the code references to the ```folderName``` variables.
