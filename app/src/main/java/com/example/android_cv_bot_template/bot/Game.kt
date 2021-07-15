@@ -1,12 +1,13 @@
 package com.example.android_cv_bot_template.bot
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
+import androidx.preference.PreferenceManager
 import com.example.android_cv_bot_template.MainActivity
-import com.example.android_cv_bot_template.utils.MyAccessibilityService
-import com.example.android_cv_bot_template.ui.settings.SettingsFragment
 import com.example.android_cv_bot_template.utils.ImageUtils
 import com.example.android_cv_bot_template.utils.MessageLog
+import com.example.android_cv_bot_template.utils.MyAccessibilityService
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
@@ -17,7 +18,8 @@ import java.util.concurrent.TimeUnit
 class Game(private val myContext: Context) {
 	private val TAG: String = "[${MainActivity.loggerTag}]Game"
 	
-	private var debugMode: Boolean = SettingsFragment.getBooleanSharedPreference(myContext, "debugMode")
+	private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(myContext)
+	private var debugMode: Boolean = sharedPreferences.getBoolean("debugMode", false)
 	
 	val imageUtils: ImageUtils = ImageUtils(myContext, this)
 	val gestureUtils: MyAccessibilityService = MyAccessibilityService.getInstance()

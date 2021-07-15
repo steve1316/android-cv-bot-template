@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.core.content.edit
+import androidx.navigation.fragment.findNavController
 import androidx.preference.*
 import com.example.android_cv_bot_template.MainActivity
 import com.example.android_cv_bot_template.R
@@ -19,80 +20,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
 	private lateinit var multipleOptionItems: Array<String>
 	private lateinit var multipleOptionCheckedItems: BooleanArray
 	private var userSelectedOptions: ArrayList<Int> = arrayListOf()
-	
-	companion object {
-		/**
-		 * Get a String value from the SharedPreferences using the provided key.
-		 *
-		 * @param context The context for the application.
-		 * @param key The name of the preference to retrieve.
-		 * @return The value that is associated with the key.
-		 */
-		fun getStringSharedPreference(context: Context, key: String): String {
-			val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-			return sharedPreferences.getString(key, "")!!
-		}
-		
-		/**
-		 * Get a Set<String> value from the SharedPreferences using the provided key.
-		 *
-		 * @param context The context for the application.
-		 * @param key The name of the preference to retrieve.
-		 * @return The value that is associated with the key.
-		 */
-		fun getStringSetSharedPreference(context: Context, key: String): Set<String> {
-			val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-			return sharedPreferences.getStringSet(key, setOf())!!
-		}
-		
-		/**
-		 * Get a Int value from the SharedPreferences using the provided key.
-		 *
-		 * @param context The context for the application.
-		 * @param key The name of the preference to retrieve.
-		 * @return The value that is associated with the key.
-		 */
-		fun getIntSharedPreference(context: Context, key: String): Int {
-			val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-			return sharedPreferences.getInt(key, 0)
-		}
-		
-		/**
-		 * Get a Boolean value from the SharedPreferences using the provided key.
-		 *
-		 * @param context The context for the application.
-		 * @param key The name of the preference to retrieve.
-		 * @return The value that is associated with the key.
-		 */
-		fun getBooleanSharedPreference(context: Context, key: String): Boolean {
-			val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-			return sharedPreferences.getBoolean(key, false)
-		}
-		
-		/**
-		 * Get a Float value from the SharedPreferences using the provided key.
-		 *
-		 * @param context The context for the application.
-		 * @param key The name of the preference to retrieve.
-		 * @return The value that is associated with the key.
-		 */
-		fun getFloatSharedPreference(context: Context, key: String): Float {
-			val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-			return sharedPreferences.getFloat(key, 0F)
-		}
-		
-		/**
-		 * Get a Long value from the SharedPreferences using the provided key.
-		 *
-		 * @param context The context for the application.
-		 * @param key The name of the preference to retrieve.
-		 * @return The value that is associated with the key.
-		 */
-		fun getLongSharedPreference(context: Context, key: String): Long {
-			val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-			return sharedPreferences.getLong(key, 0L)
-		}
-	}
 	
 	// This listener is triggered whenever the user changes a Preference setting in the Settings Page.
 	private val onSharedPreferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->

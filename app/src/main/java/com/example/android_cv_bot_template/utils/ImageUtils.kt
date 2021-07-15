@@ -1,10 +1,12 @@
 package com.example.android_cv_bot_template.utils
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.util.Log
+import androidx.preference.PreferenceManager
 import com.example.android_cv_bot_template.MainActivity
 import com.example.android_cv_bot_template.bot.Game
 import com.example.android_cv_bot_template.ui.settings.SettingsFragment
@@ -28,6 +30,7 @@ import java.util.*
 class ImageUtils(context: Context, private val game: Game) {
 	private val TAG: String = "[${MainActivity.loggerTag}]ImageUtils"
 	private var myContext = context
+	private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(myContext)
 	
 	// Initialize Google's ML OCR.
 	private val textRecognizer = TextRecognition.getClient()
@@ -59,7 +62,7 @@ class ImageUtils(context: Context, private val game: Game) {
 		updateMatchFilePath(matchFilePath)
 		
 		// Now determine if Debug Mode is turned on for more informational logging messages.
-		debugMode = SettingsFragment.getBooleanSharedPreference(myContext, "debugMode")
+		debugMode = sharedPreferences.getBoolean("debugMode", false)
 		
 		// Uncomment the below line to initialize Tesseract for the purposes of OCR text recognition.
 		// initTesseract("SET FILE NAME OF .TRAINEDDATA FOR TESSERACT INITIALIZATION HERE")
