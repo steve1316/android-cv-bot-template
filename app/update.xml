@@ -1,0 +1,13 @@
+<AppUpdater>
+  <update>
+    <latestVersion>1.0.0</latestVersion>
+    <url>https://github.com/steve1316/android-cv-bot-template/releases</url>
+    <releaseNotes>
+v1.0.0 - Changelog
+
+- Release notes go here
+- The app does nothing by itself. It serves as a framework for Android computer vision developers for purposes like automating a Android mobile game.
+- In order to trigger the auto update notification, the versionName inside the app's build.gradle needs to be greater than 1.0.0.
+    </releaseNotes>
+  </update>
+</AppUpdater>
