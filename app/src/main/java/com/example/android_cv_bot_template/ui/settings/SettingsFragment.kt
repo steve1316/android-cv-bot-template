@@ -166,6 +166,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
 		
 		createMultiplePickerAlertDialog()
 		
+		// Solution courtesy of https://stackoverflow.com/a/63368599
+		// In short, Fragments via the mobile_navigation.xml are children of NavHostFragment, not MainActivity's supportFragmentManager.
+		// This is why using the method described in official Google docs via OnPreferenceStartFragmentCallback and using the supportFragmentManager is not correct for this instance.
+		findPreference<Preference>("nestedSettings")?.setOnPreferenceClickListener {
+			// Navigate to the TrainingFragment.
+			findNavController().navigate(R.id.nav_settings_nested)
+			true
+		}
+		
 		Log.d(TAG, "Preferences created successfully.")
 	}
 	

@@ -17,4 +17,9 @@
         android:label="@string/menu_settings"
         tools:layout="@layout/fragment_settings" />
 
+    <fragment
+        android:id="@+id/nav_settings_nested"
+        android:name="com.example.android_cv_bot_template.ui.settings.NestedSettingsFragment"
+        android:label="Nested Settings" />
+
 </navigation>

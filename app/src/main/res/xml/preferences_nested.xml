@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory app:title="Category 1.5">
+        <CheckBoxPreference
+            app:key="nestedCheckBox"
+            app:summary="This setting exists as an example of nested settings and navigating to different Preference fragments."
+            app:title="Nested Example" />
+
+    </PreferenceCategory>
+</PreferenceScreen>

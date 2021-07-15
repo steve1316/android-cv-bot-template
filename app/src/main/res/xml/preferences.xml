@@ -25,6 +25,12 @@
             app:summary="Select the Options(s) in order from highest to lowest priority."
             app:title="Select Option(s)" />
 
+        <Preference
+            app:fragment="com.example.android_cv_bot_template.ui.settings.NestedSettingsFragment"
+            app:key="nestedSettings"
+            app:summary="Tap me to go to the next Preference screen!"
+            app:title="Nested Settings" />
+
     </PreferenceCategory>
 
     <PreferenceCategory app:title="Category 2">
