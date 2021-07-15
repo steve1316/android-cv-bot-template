@@ -15,6 +15,7 @@ https://user-images.githubusercontent.com/18709555/118407909-c933be00-b637-11eb-
 - Fleshed out template matching functions via OpenCV
 - Notifications to alert users of various changes during workflow.
 - Accessibility Service that will allow the bot process to execute gestures on the screen like tapping a specific point.
+- Automatically checking for new app updates from your designated GitHub repository.
 
 # Instructions
 1. Download the project and extract.
@@ -22,11 +23,16 @@ https://user-images.githubusercontent.com/18709555/118407909-c933be00-b637-11eb-
 3. ```Clean Project``` and then ```Rebuild Project``` under the Build menu.
 4. After building is complete, you can test the capability of this framework in the Android Studio's emulator.
 5. After you familiarized yourself with what the framework can do, you can refactor the application's package name in various parts of the project and in ```settings.gradle```.
+6. If you want your application automatically check for the latest updates from your GitHub repo using ```AppUpdater```, do the following:
+   1. Upload a .xml file to your Github repo using the provided example ```app/update.xml``` with your updated version number, release notes, and link to the ```Releases``` page of your GitHub repo.
+   2. Update the ```setUpdateXML()``` with the ```RAW``` link to your new update.xml.
+   3. Now when a user has a lower version number compared to the latest version in your ```Releases``` page in your GitHub repo, they will be prompted with a dialog window like this:
 
 ### Some things to note while developing
 1. ```ImageUtils``` class reads in images in ```.webp``` format to reduce apk file size. You can change this if you wish.
 2. All images are recommended to be categorized in separate folders inside the /assets/ folder. Be sure to update the ```folderName``` variables inside the various functions in ```ImageUtils```. Or you could remove the need to organize them and just put all image assets into one place. Just make sure to update the code references to the ```folderName``` variables.
 3. When working on a horizontal screen, the coordinate axis gets flipped as well. So if your vertical orientation dimensions is 1080x2400, then the horizontal orientation dimensions gets flipped to 2400x1080.
+4. If you want to create nested Fragment Preference settings, there is an example provided to showcase how to do that in SettingsFragment.kt and mobile_navigation.xml.
 
 # Important Classes to be familiar with
 ## BotService
@@ -52,3 +58,10 @@ https://user-images.githubusercontent.com/18709555/118407909-c933be00-b637-11eb-
 ## NotificationUtils
 - Allows the bot process to create and update Notifications to notify users of the status of the bot and whether or not the bot encounters an Exception.
 - Sends a STOP signal to the bot process from the Notification's button via the ```StopServiceReceiver``` class.
+
+# Technologies used
+1. [MediaProjection - Used to obtain full screenshots](https://developer.android.com/reference/android/media/projection/MediaProjection)
+2. [AccessibilityService - Used to dispatch gestures like tapping and scrolling](https://developer.android.com/reference/android/accessibilityservice/AccessibilityService)
+3. [OpenCV Android 4.5.1 - Used to template match](https://opencv.org/releases/)
+4. [Tesseract4Android 2.1.1 - For performing OCR on the screen](https://github.com/adaptech-cz/Tesseract4Android)
+5. [AppUpdater 2.7 - For automatically checking and notifying the user for new app updates](https://github.com/javiersantos/AppUpdater)
