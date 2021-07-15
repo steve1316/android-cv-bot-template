@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.media.projection.MediaProjectionManager
 import android.net.Uri
 import android.os.Bundle
@@ -18,10 +19,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.example.android_cv_bot_template.MainActivity
-import com.example.android_cv_bot_template.utils.MyAccessibilityService
 import com.example.android_cv_bot_template.R
 import com.example.android_cv_bot_template.utils.MediaProjectionService
 import com.example.android_cv_bot_template.utils.MessageLog
+import com.example.android_cv_bot_template.utils.MyAccessibilityService
 import com.github.javiersantos.appupdater.AppUpdater
 import com.github.javiersantos.appupdater.enums.UpdateFrom
 
@@ -57,21 +58,48 @@ class HomeFragment : Fragment() {
 			}
 		}
 		
-		// Update the TextView here based on the information of the SharedPreferences.
-		val settingsStatusTextView: TextView = homeFragmentView.findViewById(R.id.settings_status)
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 		val item = sharedPreferences.getString("item", "")
 		val value = sharedPreferences.getInt("value", 1)
 		val savedOptions = sharedPreferences.getString("savedOptions", "")?.split("|")
+		val nestedSettings = sharedPreferences.getBoolean("nestedSettings", false)
 		val debugMode = sharedPreferences.getBoolean("debugMode", false)
 		
-		settingsStatusTextView.text = "Item: $item\n\nValue: $value\n\nSaved Options: $savedOptions\n\nDebug Mode: $debugMode"
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Now construct the strings to print them.
+		
+		val nestedSettingsString: String = if (nestedSettings) {
+			"Checked"
+		} else {
+			"Not Checked"
+		}
+		
+		val debugModeString: String = if (debugMode) {
+			"Enabled"
+		} else {
+			"Disabled"
+		}
+		
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Update the TextView here based on the information of the SharedPreferences.
+		
+		val settingsStatusTextView: TextView = homeFragmentView.findViewById(R.id.settings_status)
+		settingsStatusTextView.setTextColor(Color.WHITE)
+		settingsStatusTextView.text = "---------- Category 1 ----------\n" +
+				"Example Picker 1: $item\n" +
+				"Example SeekBar: $value\n" +
+				"Saved Option(s): $savedOptions\n" +
+				"Nested Preference: $nestedSettingsString\n" +
+				"---------- Category 2 ----------\n" +
+				"Debug Mode: $debugModeString"
 		
 		// Enable the start button if the required settings have been set.
-		if ((item != null && item.isNotEmpty())) {
-			startButton.isEnabled = true
-		}
+		startButton.isEnabled = (item != null && item.isNotEmpty())
 		
 		return homeFragmentView
 	}
