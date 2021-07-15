@@ -22,6 +22,8 @@ import com.example.android_cv_bot_template.utils.MyAccessibilityService
 import com.example.android_cv_bot_template.R
 import com.example.android_cv_bot_template.utils.MediaProjectionService
 import com.example.android_cv_bot_template.utils.MessageLog
+import com.github.javiersantos.appupdater.AppUpdater
+import com.github.javiersantos.appupdater.enums.UpdateFrom
 
 class HomeFragment : Fragment() {
 	private val TAG: String = "[${MainActivity.loggerTag}]HomeFragment"
@@ -102,6 +104,12 @@ class HomeFragment : Fragment() {
 			messageLogTextView.append("\n" + messageLog[index])
 			index += 1
 		}
+		
+		// Set up the app updater to check for the latest update from GitHub.
+		AppUpdater(myContext)
+			.setUpdateFrom(UpdateFrom.XML)
+			.setUpdateXML("https://raw.githubusercontent.com/steve1316/android-cv-bot-template/master/app/update.xml")
+			.start()
 	}
 	
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

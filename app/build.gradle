@@ -78,4 +78,7 @@ dependencies {
 
     // Tesseract4Android for OCR text recognition.
     implementation 'cz.adaptech.android:tesseract4android:2.1.1'
+
+    // AppUpdater for notifying users when there is a new update available.
+    implementation 'com.github.javiersantos:AppUpdater:2.7'
 }
