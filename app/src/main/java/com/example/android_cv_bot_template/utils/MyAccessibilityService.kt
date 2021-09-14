@@ -22,7 +22,7 @@ import kotlinx.coroutines.runBlocking
  */
 class MyAccessibilityService : AccessibilityService() {
 	private var appName: String = ""
-	private val TAG: String = "[${MainActivity.loggerTag}]MyAccessibilityService"
+	private val tag: String = "[${MainActivity.loggerTag}]MyAccessibilityService"
 	private lateinit var myContext: Context
 	
 	companion object {
@@ -45,7 +45,7 @@ class MyAccessibilityService : AccessibilityService() {
 		myContext = this
 		appName = myContext.getString(R.string.app_name)
 		
-		Log.d(TAG, "Accessibility Service for $appName is now running.")
+		Log.d(tag, "Accessibility Service for $appName is now running.")
 		Toast.makeText(myContext, "Accessibility Service for $appName now running.", Toast.LENGTH_SHORT).show()
 	}
 	
@@ -56,7 +56,7 @@ class MyAccessibilityService : AccessibilityService() {
 	override fun onDestroy() {
 		super.onDestroy()
 		
-		Log.d(TAG, "Accessibility Service for $appName is now stopped.")
+		Log.d(tag, "Accessibility Service for $appName is now stopped.")
 		Toast.makeText(myContext, "Accessibility Service for $appName is now stopped.", Toast.LENGTH_SHORT).show()
 	}
 	
@@ -83,7 +83,7 @@ class MyAccessibilityService : AccessibilityService() {
 	 * @return Pair of integers that represent the newly randomized tap location.
 	 */
 	private fun randomizeTapLocation(x: Double, y: Double, folderName: String, imageName: String): Pair<Int, Int> {
-		// Get the Bitmap from the template image file inside the specified folder.
+		// Get the Bitmap from the template image file inside the specified folder under assets.
 		val templateBitmap: Bitmap
 		myContext.assets?.open("$folderName/$imageName.webp").use { inputStream ->
 			// Get the Bitmap from the template image file and then start matching.
@@ -134,6 +134,7 @@ class MyAccessibilityService : AccessibilityService() {
 	fun tap(x: Double, y: Double, folderName: String, imageName: String, ignoreWait: Boolean = false, longPress: Boolean = false, taps: Int = 1): Boolean {
 		// Randomize the tapping location.
 		val (newX, newY) = randomizeTapLocation(x, y, folderName, imageName)
+		Log.d(tag, "Tapping $newX, $newY")
 		
 		// Construct the tap gesture.
 		val tapPath = Path().apply {

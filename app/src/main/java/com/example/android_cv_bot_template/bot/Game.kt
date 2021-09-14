@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit
  * Main driver for bot activity and navigation.
  */
 class Game(private val myContext: Context) {
-	private val TAG: String = "[${MainActivity.loggerTag}]Game"
+	private val tag: String = "[${MainActivity.loggerTag}]Game"
 	
 	private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(myContext)
 	private var debugMode: Boolean = sharedPreferences.getBoolean("debugMode", false)
@@ -48,14 +48,14 @@ class Game(private val myContext: Context) {
 	 * Print the specified message to debug console and then saves the message to the log.
 	 *
 	 * @param message Message to be saved.
-	 * @param MESSAGE_TAG TAG to distinguish between messages for where they came from. Defaults to Game's TAG.
+	 * @param tag Distinguish between messages for where they came from. Defaults to Game's tag.
 	 * @param isError Flag to determine whether to display log message in console as debug or error.
 	 */
-	fun printToLog(message: String, MESSAGE_TAG: String = TAG, isError: Boolean = false) {
+	fun printToLog(message: String, tag: String = this.tag, isError: Boolean = false) {
 		if (!isError) {
-			Log.d(MESSAGE_TAG, message)
+			Log.d(tag, message)
 		} else {
-			Log.e(MESSAGE_TAG, message)
+			Log.e(tag, message)
 		}
 		
 		// Remove the newline prefix if needed and place it where it should be.
@@ -95,7 +95,7 @@ class Game(private val myContext: Context) {
 		printToLog("\n[INFO] I am ending here!")
 		
 		val endTime: Long = System.currentTimeMillis()
-		Log.d(TAG, "Total Runtime: ${endTime - startTime}ms")
+		Log.d(tag, "Total Runtime: ${endTime - startTime}ms")
 		
 		return true
 	}

@@ -31,8 +31,8 @@ import kotlin.math.roundToInt
  * https://www.tutorialspoint.com/in-android-how-to-register-a-custom-intent-filter-to-a-broadcast-receiver
  */
 class BotService : Service() {
+	private val tag: String = "[${MainActivity.loggerTag}]BotService"
 	private var appName = ""
-	private val TAG: String = "[${MainActivity.loggerTag}]BotService"
 	private lateinit var myContext: Context
 	private lateinit var overlayView: View
 	private lateinit var overlayButton: ImageButton
@@ -113,7 +113,7 @@ class BotService : Service() {
 					if (elapsedTime < 100L) {
 						// Update both the Notification and the overlay button to reflect the current bot status.
 						if (!isRunning) {
-							Log.d(TAG, "Bot Service for $appName is now running.")
+							Log.d(tag, "Bot Service for $appName is now running.")
 							Toast.makeText(myContext, "Bot Service for $appName is now running.", Toast.LENGTH_SHORT).show()
 							isRunning = true
 							NotificationUtils.updateNotification(myContext, isRunning)
@@ -136,7 +136,7 @@ class BotService : Service() {
 									
 									performCleanUp()
 								} catch (e: Exception) {
-									game.printToLog("$appName encountered an Exception: ${e.stackTraceToString()}", MESSAGE_TAG = TAG, isError = true)
+									game.printToLog("$appName encountered an Exception: ${e.stackTraceToString()}", tag = tag, isError = true)
 									
 									val newIntent = Intent("CUSTOM_INTENT")
 									if (e.toString() == "java.lang.InterruptedException") {
@@ -202,7 +202,7 @@ class BotService : Service() {
 		// Save the message log.
 		MessageLog.saveLogToFile(myContext)
 		
-		Log.d(TAG, "Bot Service for $appName is now stopped.")
+		Log.d(tag, "Bot Service for $appName is now stopped.")
 		isRunning = false
 		
 		// Update the app's notification with the status.

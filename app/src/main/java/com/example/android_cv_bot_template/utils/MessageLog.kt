@@ -29,7 +29,7 @@ class MessageLog {
 			cleanLogsFolder(context)
 			
 			if (!saveCheck) {
-				Log.d(TAG, "Now beginning process to save current Message Log to internal storage...")
+				Log.d(tag, "Now beginning process to save current Message Log to internal storage...")
 				
 				// Generate file path to save to. All message logs will be saved to the /logs/ folder inside internal storage. Create the /logs/ folder if needed.
 				val path = File(context.getExternalFilesDir(null)?.absolutePath + "/logs/")
