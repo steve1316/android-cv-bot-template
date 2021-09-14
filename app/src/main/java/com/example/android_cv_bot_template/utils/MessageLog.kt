@@ -1,18 +1,21 @@
 package com.example.android_cv_bot_template.utils
 
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import com.example.android_cv_bot_template.MainActivity
 import java.io.File
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 /**
  * This class is in charge of holding the Message Log to which all logging messages from the bot goes to and also saves it all into a file when the bot has finished.
  */
 class MessageLog {
 	companion object {
-		private val TAG: String = "[${MainActivity.loggerTag}]MessageLog"
+		private const val tag: String = "[${MainActivity.loggerTag}]MessageLog"
 		var messageLog = arrayListOf<String>()
 		
 		var saveCheck = false
@@ -35,12 +38,18 @@ class MessageLog {
 				}
 				
 				// Generate the file name.
-				val current = LocalDateTime.now()
-				val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-				val fileName = "log @ ${current.format(formatter)}"
+				val fileName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+					val current = LocalDateTime.now()
+					val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+					"log @ ${current.format(formatter)}"
+				} else {
+					val current = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
+					val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+					"log @ ${current.format(sdf)}"
+				}
 				
 				// Now save the Message Log to the new text file.
-				Log.d(TAG, "Now saving Message Log to file named \"$fileName\" at $path")
+				Log.d(tag, "Now saving Message Log to file named \"$fileName\" at $path")
 				val file = File(path, "$fileName.txt")
 				
 				if (!file.exists()) {

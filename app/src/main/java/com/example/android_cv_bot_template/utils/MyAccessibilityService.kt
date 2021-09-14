@@ -143,7 +143,11 @@ class MyAccessibilityService : AccessibilityService() {
 		val gesture: GestureDescription = if (longPress) {
 			// Long press for 1000ms.
 			GestureDescription.Builder().apply {
-				addStroke(GestureDescription.StrokeDescription(tapPath, 0, 1000, true))
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+					addStroke(GestureDescription.StrokeDescription(tapPath, 0, 1000, true))
+				} else {
+					addStroke(GestureDescription.StrokeDescription(tapPath, 0, 1000))
+				}
 			}.build()
 		} else {
 			GestureDescription.Builder().apply {
