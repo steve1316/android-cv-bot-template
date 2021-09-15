@@ -88,5 +88,5 @@ dependencies {
     implementation("dev.kord:kord-core:0.7.4")
 
     // Klaxon to parse config.json files for internal settings.
-    // implementation 'com.beust:klaxon:5.5'
+    implementation 'com.beust:klaxon:5.5'
 }
