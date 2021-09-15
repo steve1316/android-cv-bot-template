@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.preference.PreferenceManager
 import com.example.android_cv_bot_template.MainActivity
+import com.example.android_cv_bot_template.utils.DiscordUtils
 import com.example.android_cv_bot_template.utils.ImageUtils
 import com.example.android_cv_bot_template.utils.MessageLog
 import com.example.android_cv_bot_template.utils.MyAccessibilityService
@@ -95,7 +96,10 @@ class Game(private val myContext: Context) {
 		printToLog("\n[INFO] I am ending here!")
 		
 		val endTime: Long = System.currentTimeMillis()
-		Log.d(tag, "Total Runtime: ${endTime - startTime}ms")
+		val runTime: Long = endTime - startTime
+		Log.d(tag, "Total Runtime: ${runTime}ms")
+		
+		DiscordUtils.queue.add("Total Runtime: ${runTime}ms")
 		
 		return true
 	}

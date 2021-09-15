@@ -18,9 +18,11 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.preference.PreferenceManager
 import com.example.android_cv_bot_template.MainActivity
 import com.example.android_cv_bot_template.R
 import com.example.android_cv_bot_template.bot.Game
+import kotlinx.coroutines.runBlocking
 import kotlin.concurrent.thread
 import kotlin.math.roundToInt
 
@@ -127,6 +129,17 @@ class BotService : Service() {
 									MessageLog.messageLog.clear()
 									MessageLog.saveCheck = false
 									
+									// Run the Discord process on a new Thread.
+									if (PreferenceManager.getDefaultSharedPreferences(myContext).getBoolean("enableDiscord", false)) {
+										val discordUtils = DiscordUtils(myContext)
+										thread {
+											runBlocking {
+												DiscordUtils.queue.clear()
+												discordUtils.main()
+											}
+										}
+									}
+									
 									// Start with the provided settings from SharedPreferences.
 									game.start()
 									
@@ -146,6 +159,24 @@ class BotService : Service() {
 									}
 									
 									sendBroadcast(newIntent)
+									
+									if (e.stackTraceToString().length >= 2500) {
+										Log.d(tag, "Splitting Discord message.")
+										val halfLength: Int = e.stackTraceToString().length / 2
+										val message1: String = e.stackTraceToString().substring(0, halfLength)
+										val message2: String = e.stackTraceToString().substring(halfLength)
+										
+										DiscordUtils.queue.add("> Bot encountered exception in Farming Mode: \n$message1")
+										DiscordUtils.queue.add("> $message2")
+									} else {
+										DiscordUtils.queue.add("> Bot encountered exception in Farming Mode: \n${e.stackTraceToString()}")
+									}
+									
+									thread {
+										runBlocking {
+											DiscordUtils.disconnectClient()
+										}
+									}
 									
 									performCleanUp()
 								}
@@ -199,14 +230,13 @@ class BotService : Service() {
 	 * Perform cleanup upon app completion or encountering an Exception.
 	 */
 	private fun performCleanUp() {
+		DiscordUtils.queue.add("```diff\n- Terminated connection to Discord API for Example\n```")
+		
 		// Save the message log.
 		MessageLog.saveLogToFile(myContext)
 		
 		Log.d(tag, "Bot Service for $appName is now stopped.")
 		isRunning = false
-		
-		// Update the app's notification with the status.
-		NotificationUtils.updateNotification(myContext, isRunning)
 		
 		// Reset the overlay button's image on a separate UI thread.
 		Handler(Looper.getMainLooper()).post {
