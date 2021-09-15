@@ -16,18 +16,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.example.android_cv_bot_template.MainActivity
 import com.example.android_cv_bot_template.R
+import com.example.android_cv_bot_template.data.ConfigData
+import com.example.android_cv_bot_template.utils.JSONParser
 import com.example.android_cv_bot_template.utils.MediaProjectionService
 import com.example.android_cv_bot_template.utils.MessageLog
 import com.example.android_cv_bot_template.utils.MyAccessibilityService
 import com.github.javiersantos.appupdater.AppUpdater
 import com.github.javiersantos.appupdater.enums.UpdateFrom
+import java.io.File
 
 class HomeFragment : Fragment() {
-	private val TAG: String = "[${MainActivity.loggerTag}]HomeFragment"
+	private val loggerTag: String = "[${MainActivity.loggerTag}]HomeFragment"
 	private val SCREENSHOT_PERMISSION_REQUEST_CODE: Int = 100
 	private var firstBoot = false
 	
@@ -40,6 +44,8 @@ class HomeFragment : Fragment() {
 		myContext = requireContext()
 		
 		homeFragmentView = inflater.inflate(R.layout.fragment_home, container, false)
+		
+		val jsonParser = JSONParser(myContext)
 		
 		// Start or stop the MediaProjection service via this button.
 		startButton = homeFragmentView.findViewById(R.id.start_button)
@@ -58,6 +64,59 @@ class HomeFragment : Fragment() {
 			}
 		}
 		
+		// Check if the application created the config.json file yet and if not, create it.
+		val file = File(myContext.getExternalFilesDir(null), "config.json")
+		if (!file.exists()) {
+			file.createNewFile()
+			
+			val content = "{\n" +
+					"    \"discord\": {\n" +
+					"        \"discordToken\": \"\",\n" +
+					"        \"userID\": \"\"\n" +
+					"    },\n" +
+					"    \"twitter\": {\n" +
+					"        \"apiKey\": \"\",\n" +
+					"        \"apiKeySecret\": \"\",\n" +
+					"        \"accessToken\": \"\",\n" +
+					"        \"accessTokenSecret\": \"\"\n" +
+					"    }\n" +
+					"}\n"
+			
+			file.writeText(content)
+			
+			Log.d(loggerTag, "Created config.json in internal storage.")
+		} else {
+			Log.d(loggerTag, "config.json already exists.")
+			
+			val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+			
+			// Save the Twitter API keys and tokens and every other settings in the config.json to SharedPreferences.
+			try {
+				if (file.exists()) {
+					jsonParser.constructConfigClass()
+					
+					sharedPreferences.edit {
+						putString("discordToken", ConfigData.discordToken)
+						putString("userID", ConfigData.userID)
+						commit()
+					}
+					
+					Log.d(loggerTag, "Saved config.json settings to SharedPreferences.")
+				}
+			} catch (e: Exception) {
+				Log.e(loggerTag, "Encountered error while saving Twitter API credentials to SharedPreferences from config: ${e.stackTraceToString()}")
+				Log.e(loggerTag, "Clearing any existing Twitter API credentials from SharedPreferences...")
+				
+				sharedPreferences.edit {
+					remove("apiKey")
+					remove("apiKeySecret")
+					remove("accessToken")
+					remove("accessTokenSecret")
+					commit()
+				}
+			}
+		}
+		
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		
@@ -66,6 +125,10 @@ class HomeFragment : Fragment() {
 		val value = sharedPreferences.getInt("value", 1)
 		val savedOptions = sharedPreferences.getString("savedOptions", "")?.split("|")
 		val nestedSettings = sharedPreferences.getBoolean("nestedSettings", false)
+		val confidence: Int = sharedPreferences.getInt("confidence", 80)
+		val confidenceAll: Int = sharedPreferences.getInt("confidenceAll", 80)
+		val customScale: Double = sharedPreferences.getString("customScale", "1.0")!!.toDouble()
+		val enableDiscord: Boolean = sharedPreferences.getBoolean("enableDiscord", false)
 		val debugMode = sharedPreferences.getBoolean("debugMode", false)
 		
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -76,6 +139,18 @@ class HomeFragment : Fragment() {
 			"Checked"
 		} else {
 			"Not Checked"
+		}
+		
+		val customScaleString: String = if (customScale == 1.0) {
+			"1.0 (Default)"
+		} else {
+			"$customScale"
+		}
+		
+		val enableDiscordString: String = if (enableDiscord) {
+			"Enabled"
+		} else {
+			"Disabled"
 		}
 		
 		val debugModeString: String = if (debugMode) {
@@ -96,6 +171,10 @@ class HomeFragment : Fragment() {
 				"Saved Option(s): $savedOptions\n" +
 				"Nested Preference: $nestedSettingsString\n" +
 				"---------- Category 2 ----------\n" +
+				"Confidence for Single Image Matching: $confidence%\n" +
+				"Confidence for Multiple Image Matching: $confidenceAll%\n" +
+				"Scale: $customScaleString\n" +
+				"Discord Notifications: $enableDiscordString\n" +
 				"Debug Mode: $debugModeString"
 		
 		// Enable the start button if the required settings have been set.
@@ -120,7 +199,7 @@ class HomeFragment : Fragment() {
 		firstBoot = false
 		
 		// Now update the Message Log inside the ScrollView with the latest logging messages from the bot.
-		Log.d(TAG, "Now updating the Message Log TextView...")
+		Log.d(loggerTag, "Now updating the Message Log TextView...")
 		val messageLogTextView = homeFragmentView.findViewById<TextView>(R.id.message_log)
 		messageLogTextView.text = ""
 		var index = 0
@@ -133,7 +212,9 @@ class HomeFragment : Fragment() {
 			index += 1
 		}
 		
-		// Set up the app updater to check for the latest update from GitHub.
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Set up the app updater to check for the latest update from GitHub. Point it to your update.xml.
 		AppUpdater(myContext)
 			.setUpdateFrom(UpdateFrom.XML)
 			.setUpdateXML("https://raw.githubusercontent.com/steve1316/android-cv-bot-template/master/app/update.xml")
@@ -184,7 +265,7 @@ class HomeFragment : Fragment() {
 	 */
 	private fun checkForOverlayPermission(): Boolean {
 		if (!Settings.canDrawOverlays(requireContext())) {
-			Log.d(TAG, "Application is missing overlay permission.")
+			Log.d(loggerTag, "Application is missing overlay permission.")
 			
 			AlertDialog.Builder(requireContext()).apply {
 				setTitle(R.string.overlay_disabled)
@@ -200,7 +281,7 @@ class HomeFragment : Fragment() {
 			return false
 		}
 		
-		Log.d(TAG, "Application has permission to draw overlay.")
+		Log.d(loggerTag, "Application has permission to draw overlay.")
 		return true
 	}
 	
@@ -219,7 +300,7 @@ class HomeFragment : Fragment() {
 			val enabled = prefString.contains(myContext.packageName.toString() + "/" + MyAccessibilityService::class.java.name)
 			
 			if (enabled) {
-				Log.d(TAG, "This application's Accessibility Service is currently turned on.")
+				Log.d(loggerTag, "This application's Accessibility Service is currently turned on.")
 				return true
 			}
 		}
@@ -229,7 +310,7 @@ class HomeFragment : Fragment() {
 			setTitle(R.string.accessibility_disabled)
 			setMessage(R.string.accessibility_disabled_message)
 			setPositiveButton(R.string.go_to_settings) { _, _ ->
-				Log.d(TAG, "Accessibility Service is not detected. Moving user to Accessibility Settings.")
+				Log.d(loggerTag, "Accessibility Service is not detected. Moving user to Accessibility Settings.")
 				val accessibilitySettingsIntent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
 				myContext.startActivity(accessibilitySettingsIntent)
 			}

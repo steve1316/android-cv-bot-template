@@ -74,22 +74,32 @@ class SettingsFragment : PreferenceFragmentCompat() {
 		// Grab the saved preferences from the previous time the user used the app.
 		val item1 = sharedPreferences.getString("item", "")
 		val value = sharedPreferences.getInt("value", 1)
+		val confidence: Int = sharedPreferences.getInt("confidence", 80)
+		val confidenceAll: Int = sharedPreferences.getInt("confidenceAll", 80)
+		val customScale: Double = sharedPreferences.getString("customScale", "1.0")!!.toDouble()
+		val enableDiscord: Boolean = sharedPreferences.getBoolean("enableDiscord", false)
 		val debugMode = sharedPreferences.getBoolean("debugMode", false)
 		
 		// Get references to the Preference components.
 		val exampleListPreference: ListPreference = findPreference("exampleListPreference")!!
 		val exampleSeekBarPreference: SeekBarPreference = findPreference("exampleSeekBarPreference")!!
+		val confidenceSeekBar: SeekBarPreference = findPreference("confidenceSeekBar")!!
+		val confidenceAllSeekBar: SeekBarPreference = findPreference("confidenceAllSeekBar")!!
+		val customScaleEditText: EditTextPreference = findPreference("customScale")!!
+		val enableDiscordCheckBox: CheckBoxPreference = findPreference("enableDiscord")!!
 		val debugModeCheckBox: CheckBoxPreference = findPreference("debugModeCheckBox")!!
 		
 		// Now set the following values from the shared preferences.
 		
+		////////////////////
+		// Category 1
+		////////////////////
 		if (item1 != null && item1.isNotEmpty()) {
 			exampleListPreference.value = item1
 			exampleSeekBarPreference.isEnabled = true
 		}
 		
 		exampleSeekBarPreference.value = value
-		debugModeCheckBox.isChecked = debugMode
 		
 		createMultiplePickerAlertDialog()
 		
@@ -101,6 +111,22 @@ class SettingsFragment : PreferenceFragmentCompat() {
 			findNavController().navigate(R.id.nav_settings_nested)
 			true
 		}
+		
+		////////////////////
+		// Debug Settings
+		////////////////////
+		confidenceSeekBar.value = confidence
+		confidenceAllSeekBar.value = confidenceAll
+		if (customScale == 1.0) {
+			customScaleEditText.summary =
+				"Set the scale at which to resize existing image assets to match what would be shown on your device. Internally supported are 720p, 1080p, 1600p (Portrait) and 2560p (Landscape) in width.\n\nScale: 1.0 (Default)"
+		} else {
+			customScaleEditText.summary =
+				"Set the scale at which to resize existing image assets to match what would be shown on your device. Internally supported are 720p, 1080p, 1600p (Portrait) and 2560p (Landscape) in width.\n\nScale: $customScale"
+		}
+		customScaleEditText.text = customScale.toString()
+		enableDiscordCheckBox.isChecked = enableDiscord
+		debugModeCheckBox.isChecked = debugMode
 		
 		Log.d(TAG, "Preferences created successfully.")
 	}
