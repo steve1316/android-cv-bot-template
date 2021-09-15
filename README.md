@@ -4,6 +4,8 @@
 
 > You can visit my Android bot of Granblue Fantasy for more usage details and examples of how to use this framework: https://github.com/steve1316/granblue-automation-android
 
+> Some additional usage examples at [Uma Android Training Helper](https://github.com/steve1316/uma-android-training-helper) and [Uma Android Automation](https://github.com/steve1316/uma-android-automation)
+
 This template project serves as a starter point for Android botting that relies on Computer Vision template matching via OpenCV and executing gestures like tapping and scrolling to accomplish a automation goal. It uses MediaProjection Service to programmatically take screenshots and the Accessibility Service to execute gestures. The framework is well annotated with documentation to serve as explanations and usage hints.
 
 https://user-images.githubusercontent.com/18709555/118407909-c933be00-b637-11eb-92c2-3c4acd355aff.mp4
