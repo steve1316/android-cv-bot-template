@@ -39,19 +39,6 @@ class BotService : Service() {
 	private lateinit var overlayView: View
 	private lateinit var overlayButton: ImageButton
 	
-	private val messageReceiver = object : BroadcastReceiver() {
-		// This will receive any bot state changes issued from inside the Thread and will display a Notification that will contain the intent's message.
-		override fun onReceive(context: Context?, intent: Intent?) {
-			if (intent != null) {
-				if (intent.hasExtra("EXCEPTION")) {
-					NotificationUtils.createBotStateChangedNotification(context!!, "Bot State Changed", intent.getStringExtra("EXCEPTION")!!)
-				} else if (intent.hasExtra("SUCCESS")) {
-					NotificationUtils.createBotStateChangedNotification(context!!, "Bot State Changed", intent.getStringExtra("SUCCESS")!!)
-				}
-			}
-		}
-	}
-	
 	companion object {
 		private lateinit var thread: Thread
 		private lateinit var windowManager: WindowManager
@@ -79,11 +66,6 @@ class BotService : Service() {
 		
 		myContext = this
 		appName = myContext.getString(R.string.app_name)
-		
-		// Any Intents that wants to be received needs to have the following action attached to it to be recognized.
-		val filter = IntentFilter()
-		filter.addAction("CUSTOM_INTENT")
-		registerReceiver(messageReceiver, filter)
 		
 		overlayView = LayoutInflater.from(this).inflate(R.layout.bot_actions, null)
 		windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
@@ -149,36 +131,32 @@ class BotService : Service() {
 									
 									performCleanUp()
 								} catch (e: Exception) {
-									game.printToLog("$appName encountered an Exception: ${e.stackTraceToString()}", tag = tag, isError = true)
-									
-									val newIntent = Intent("CUSTOM_INTENT")
 									if (e.toString() == "java.lang.InterruptedException") {
-										newIntent.putExtra("EXCEPTION", "Bot stopped successfully.")
+										NotificationUtils.updateNotification(myContext, false, "Bot has completed successfully with no errors.")
 									} else {
-										newIntent.putExtra("EXCEPTION", "Encountered an Exception: $e.\nTap me to see more details.")
-									}
-									
-									sendBroadcast(newIntent)
-									
-									if (e.stackTraceToString().length >= 2500) {
-										Log.d(tag, "Splitting Discord message.")
-										val halfLength: Int = e.stackTraceToString().length / 2
-										val message1: String = e.stackTraceToString().substring(0, halfLength)
-										val message2: String = e.stackTraceToString().substring(halfLength)
+										NotificationUtils.updateNotification(myContext, false, "Encountered Exception: ${e}. Tap me to see more details.")
+										game.printToLog("$appName encountered an Exception: ${e.stackTraceToString()}", tag = tag, isError = true)
 										
-										DiscordUtils.queue.add("> Bot encountered exception in Farming Mode: \n$message1")
-										DiscordUtils.queue.add("> $message2")
-									} else {
-										DiscordUtils.queue.add("> Bot encountered exception in Farming Mode: \n${e.stackTraceToString()}")
-									}
-									
-									thread {
-										runBlocking {
-											DiscordUtils.disconnectClient()
+										if (e.stackTraceToString().length >= 2500) {
+											Log.d(tag, "Splitting Discord message.")
+											val halfLength: Int = e.stackTraceToString().length / 2
+											val message1: String = e.stackTraceToString().substring(0, halfLength)
+											val message2: String = e.stackTraceToString().substring(halfLength)
+											
+											DiscordUtils.queue.add("> Bot encountered exception in Farming Mode: \n$message1")
+											DiscordUtils.queue.add("> $message2")
+										} else {
+											DiscordUtils.queue.add("> Bot encountered exception in Farming Mode: \n${e.stackTraceToString()}")
+										}
+										
+										thread {
+											runBlocking {
+												DiscordUtils.disconnectClient()
+											}
 										}
 									}
 									
-									performCleanUp()
+									performCleanUp(isException = true)
 								}
 							}
 						} else {
@@ -228,8 +206,10 @@ class BotService : Service() {
 	
 	/**
 	 * Perform cleanup upon app completion or encountering an Exception.
+	 *
+	 * @param isException Prevents updating the Notification again if the bot stopped due to an Exception.
 	 */
-	private fun performCleanUp() {
+	private fun performCleanUp(isException: Boolean = false) {
 		DiscordUtils.queue.add("```diff\n- Terminated connection to Discord API for Example\n```")
 		
 		// Save the message log.
@@ -237,6 +217,11 @@ class BotService : Service() {
 		
 		Log.d(tag, "Bot Service for $appName is now stopped.")
 		isRunning = false
+		
+		// Update the app's notification with the status.
+		if (!isException) {
+			NotificationUtils.updateNotification(myContext, false, "Bot has completed successfully with no errors.")
+		}
 		
 		// Reset the overlay button's image on a separate UI thread.
 		Handler(Looper.getMainLooper()).post {

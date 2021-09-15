@@ -113,13 +113,15 @@ class NotificationUtils {
 		 *
 		 * @param context The application context.
 		 * @param isRunning Boolean for whether or not the bot process is currently running.
+		 * @param message Optional message to append to the Notification text body. Defaults to empty string.
 		 */
-		fun updateNotification(context: Context, isRunning: Boolean) {
+		fun updateNotification(context: Context, isRunning: Boolean, message: String = "") {
 			val contentTitle = context.getString(R.string.app_name)
-			
-			var contentText = "Bot process is currently inactive"
+			var contentText = "Bot process is stopped"
 			if (isRunning) {
 				contentText = "Bot process is running"
+			} else if (message != "") {
+				contentText = message
 			}
 			
 			// Create a PendingIntent to send the user back to the application if they tap the notification itself.
@@ -158,56 +160,6 @@ class NotificationUtils {
 			}
 			
 			notificationManager.notify(NOTIFICATION_ID, newNotification)
-		}
-		
-		/**
-		 * Displays a separate Notification indicating the user of bot state changes, like Success or Exception.
-		 * @param context The application context.
-		 * @param contentTitle The title of the Notification.
-		 * @param contentText The text of the Notification.
-		 */
-		fun createBotStateChangedNotification(context: Context, contentTitle: String, contentText: String) {
-			val notificationID = 2
-			val channelID = "STATE_CHANGED"
-			val channelName = context.getString(R.string.app_name)
-			
-			val contentIntent = Intent(context, MainActivity::class.java)
-			val contentPendingIntent = PendingIntent.getActivity(context, notificationID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-			
-			val newNotification = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-				// Create the NotificationChannel.
-				val mChannel = NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH)
-				mChannel.description = "This Channel is for notifications that will inform users on bot state changes, like the bot completing its goal successfully or if it encountered an Exception."
-				
-				// Register the channel with the system; you can't change the importance or other notification behaviors after this.
-				notificationManager.createNotificationChannel(mChannel)
-				
-				NotificationCompat.Builder(context, channelID).apply {
-					setSmallIcon(R.drawable.ic_baseline_error_outline_24)
-					setContentTitle(contentTitle)
-					setContentText(contentText)
-					setContentIntent(contentPendingIntent)
-					setAutoCancel(true)
-					priority = NotificationManager.IMPORTANCE_HIGH
-					setCategory(Notification.CATEGORY_SERVICE)
-					setOngoing(false)
-					setShowWhen(true)
-				}.build()
-			} else {
-				NotificationCompat.Builder(context, channelID).apply {
-					setSmallIcon(R.drawable.ic_baseline_error_outline_24)
-					setContentTitle(contentTitle)
-					setContentText(contentText)
-					setContentIntent(contentPendingIntent)
-					setAutoCancel(true)
-					priority = NotificationManager.IMPORTANCE_HIGH
-					setCategory(Notification.CATEGORY_SERVICE)
-					setOngoing(false)
-					setShowWhen(true)
-				}.build()
-			}
-			
-			notificationManager.notify(notificationID, newNotification)
 		}
 	}
 }
