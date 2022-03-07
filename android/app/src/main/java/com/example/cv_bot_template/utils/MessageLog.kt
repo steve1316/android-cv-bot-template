@@ -3,7 +3,8 @@ package com.example.cv_bot_template.utils
 import android.content.Context
 import android.os.Build
 import android.util.Log
-import com.example.cv_bot_template.MainActivity
+import com.example.cv_bot_template.MainActivity.loggerTag
+import com.example.cv_bot_template.StartModule
 import java.io.File
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -15,7 +16,7 @@ import java.util.*
  */
 class MessageLog {
 	companion object {
-		private const val tag: String = "[${MainActivity.loggerTag}]MessageLog"
+		private const val TAG: String = "${loggerTag}MessageLog"
 		var messageLog = arrayListOf<String>()
 		
 		var saveCheck = false
@@ -29,7 +30,7 @@ class MessageLog {
 			cleanLogsFolder(context)
 			
 			if (!saveCheck) {
-				Log.d(tag, "Now beginning process to save current Message Log to internal storage...")
+				Log.d(TAG, "Now beginning process to save current Message Log to internal storage...")
 				
 				// Generate file path to save to. All message logs will be saved to the /logs/ folder inside internal storage. Create the /logs/ folder if needed.
 				val path = File(context.getExternalFilesDir(null)?.absolutePath + "/logs/")
@@ -49,7 +50,12 @@ class MessageLog {
 				}
 				
 				// Now save the Message Log to the new text file.
-				Log.d(tag, "Now saving Message Log to file named \"$fileName\" at $path")
+				Log.d(TAG, "Now saving Message Log to file named \"$fileName\" at $path")
+				messageLog.add("\nNow saving Message Log to file named \"$fileName\" at $path")
+				
+				// Send a event to the React Native frontend.
+				StartModule.sendEvent("MessageLog", "Now saving Message Log to file named \"$fileName\" at $path")
+				
 				val file = File(path, "$fileName.txt")
 				
 				if (!file.exists()) {

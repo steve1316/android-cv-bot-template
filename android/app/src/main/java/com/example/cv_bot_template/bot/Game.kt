@@ -4,7 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.preference.PreferenceManager
-import com.example.cv_bot_template.MainActivity
+import com.example.cv_bot_template.MainActivity.loggerTag
+import com.example.cv_bot_template.data.ConfigData
 import com.example.cv_bot_template.utils.DiscordUtils
 import com.example.cv_bot_template.utils.ImageUtils
 import com.example.cv_bot_template.utils.MessageLog
@@ -17,15 +18,13 @@ import java.util.concurrent.TimeUnit
  * Main driver for bot activity and navigation.
  */
 class Game(private val myContext: Context) {
-	private val tag: String = "[${MainActivity.loggerTag}]Game"
-	
-	private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(myContext)
-	private var debugMode: Boolean = sharedPreferences.getBoolean("debugMode", false)
-	
-	val imageUtils: ImageUtils = ImageUtils(myContext, this)
-	val gestureUtils: MyAccessibilityService = MyAccessibilityService.getInstance()
+	private val tag: String = "${loggerTag}Game"
 	
 	private val startTime: Long = System.currentTimeMillis()
+	
+	val configData: ConfigData = ConfigData(myContext)
+	val imageUtils: ImageUtils = ImageUtils(myContext, this)
+	val gestureUtils: MyAccessibilityService = MyAccessibilityService.getInstance()
 	
 	/**
 	 * Returns a formatted string of the elapsed time since the bot started as HH:MM:SS format.
@@ -87,7 +86,7 @@ class Game(private val myContext: Context) {
 	fun start(): Boolean {
 		val startTime: Long = System.currentTimeMillis()
 		
-		if (debugMode) {
+		if (configData.debugMode) {
 			printToLog("\n[DEBUG] I am starting here but as a debugging message!")
 		} else {
 			printToLog("\n[INFO] I am starting here!")

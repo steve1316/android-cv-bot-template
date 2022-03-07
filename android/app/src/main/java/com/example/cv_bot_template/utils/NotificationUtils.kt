@@ -70,8 +70,6 @@ class NotificationUtils {
 		 * @return A new Notification object.
 		 */
 		private fun createNewNotification(context: Context): Notification {
-			val contentTitle = context.getString(R.string.app_name)
-			
 			// Create a PendingIntent to send the user back to the application if they tap the notification itself.
 			val contentIntent = Intent(context, MainActivity::class.java)
 			val contentPendingIntent = PendingIntent.getActivity(context, NOTIFICATION_ID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT)
@@ -85,7 +83,7 @@ class NotificationUtils {
 				
 				return NotificationCompat.Builder(context, CHANNEL_ID).apply {
 					setSmallIcon(R.drawable.ic_baseline_control_camera_24)
-					setContentTitle(contentTitle)
+					setContentTitle("Status")
 					setContentText("Bot is ready to go")
 					setContentIntent(contentPendingIntent)
 					addAction(R.drawable.stop_circle_filled, context.getString(R.string.accessibility_service_action), stopPendingIntent)
@@ -97,7 +95,7 @@ class NotificationUtils {
 			} else {
 				return NotificationCompat.Builder(context, CHANNEL_ID).apply {
 					setSmallIcon(R.drawable.ic_baseline_control_camera_24)
-					setContentTitle(contentTitle)
+					setContentTitle("Status")
 					setContentText("Bot is ready to go")
 					setContentIntent(contentPendingIntent)
 					priority = NotificationManager.IMPORTANCE_HIGH
@@ -112,18 +110,11 @@ class NotificationUtils {
 		 * Updates the Notification content text.
 		 *
 		 * @param context The application context.
-		 * @param isRunning Boolean for whether or not the bot process is currently running.
-		 * @param message Optional message to append to the Notification text body. Defaults to empty string.
+		 * @param message Message to append to the Notification text body.
+		 * @param displayBigText Display the big form of the text body template in place of the content text. Defaults to false which will not render it.
+		 * @param title Title for the Notification. Defaults to "Status".
 		 */
-		fun updateNotification(context: Context, isRunning: Boolean, message: String = "") {
-			val contentTitle = context.getString(R.string.app_name)
-			var contentText = "Bot process is stopped"
-			if (isRunning) {
-				contentText = "Bot process is running"
-			} else if (message != "") {
-				contentText = message
-			}
-			
+		fun updateNotification(context: Context, message: String, title: String = "Status", displayBigText: Boolean = false) {
 			// Create a PendingIntent to send the user back to the application if they tap the notification itself.
 			val contentIntent = Intent(context, MainActivity::class.java)
 			val contentPendingIntent = PendingIntent.getActivity(context, NOTIFICATION_ID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT)
@@ -135,28 +126,58 @@ class NotificationUtils {
 				// Create a PendingIntent in order to add a action button to stop the MediaProjection service in the notification.
 				val stopPendingIntent: PendingIntent = PendingIntent.getBroadcast(context, System.currentTimeMillis().toInt(), stopIntent, PendingIntent.FLAG_CANCEL_CURRENT)
 				
-				NotificationCompat.Builder(context, CHANNEL_ID).apply {
-					setSmallIcon(R.drawable.ic_baseline_control_camera_24)
-					setContentTitle(contentTitle)
-					setContentText(contentText)
-					setContentIntent(contentPendingIntent)
-					addAction(R.drawable.stop_circle_filled, context.getString(R.string.accessibility_service_action), stopPendingIntent)
-					priority = NotificationManager.IMPORTANCE_HIGH
-					setCategory(Notification.CATEGORY_SERVICE)
-					setOngoing(true)
-					setShowWhen(true)
-				}.build()
+				if (displayBigText) {
+					NotificationCompat.Builder(context, CHANNEL_ID).apply {
+						setSmallIcon(R.drawable.ic_baseline_control_camera_24)
+						setContentTitle(title)
+						setContentText("Swipe down to see more...")
+						setStyle(NotificationCompat.BigTextStyle().bigText(message))
+						setContentIntent(contentPendingIntent)
+						addAction(R.drawable.stop_circle_filled, context.getString(R.string.accessibility_service_action), stopPendingIntent)
+						priority = NotificationManager.IMPORTANCE_HIGH
+						setCategory(Notification.CATEGORY_SERVICE)
+						setOngoing(true)
+						setShowWhen(true)
+					}.build()
+				} else {
+					NotificationCompat.Builder(context, CHANNEL_ID).apply {
+						setSmallIcon(R.drawable.ic_baseline_control_camera_24)
+						setContentTitle(title)
+						setContentText(message)
+						setContentIntent(contentPendingIntent)
+						addAction(R.drawable.stop_circle_filled, context.getString(R.string.accessibility_service_action), stopPendingIntent)
+						priority = NotificationManager.IMPORTANCE_HIGH
+						setCategory(Notification.CATEGORY_SERVICE)
+						setOngoing(true)
+						setShowWhen(true)
+					}.build()
+				}
 			} else {
-				NotificationCompat.Builder(context, CHANNEL_ID).apply {
-					setSmallIcon(R.drawable.ic_baseline_control_camera_24)
-					setContentTitle(contentTitle)
-					setContentText(contentText)
-					setContentIntent(contentPendingIntent)
-					priority = NotificationManager.IMPORTANCE_HIGH
-					setCategory(Notification.CATEGORY_SERVICE)
-					setOngoing(true)
-					setShowWhen(true)
-				}.build()
+				if (displayBigText) {
+					NotificationCompat.Builder(context, CHANNEL_ID).apply {
+						setSmallIcon(R.drawable.ic_baseline_control_camera_24)
+						setContentTitle(title)
+						setContentText("Swipe down to see more...")
+						setStyle(NotificationCompat.BigTextStyle().bigText(message))
+						setContentIntent(contentPendingIntent)
+						priority = NotificationManager.IMPORTANCE_HIGH
+						setCategory(Notification.CATEGORY_SERVICE)
+						setOngoing(true)
+						setShowWhen(true)
+					}.build()
+				} else {
+					NotificationCompat.Builder(context, CHANNEL_ID).apply {
+						setSmallIcon(R.drawable.ic_baseline_control_camera_24)
+						setContentTitle(title)
+						setContentText(message)
+						setContentIntent(contentPendingIntent)
+						priority = NotificationManager.IMPORTANCE_HIGH
+						setCategory(Notification.CATEGORY_SERVICE)
+						setOngoing(true)
+						setShowWhen(true)
+					}.build()
+				}
+				
 			}
 			
 			notificationManager.notify(NOTIFICATION_ID, newNotification)

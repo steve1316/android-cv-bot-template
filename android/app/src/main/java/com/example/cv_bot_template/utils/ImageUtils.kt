@@ -32,49 +32,39 @@ class ImageUtils(context: Context, private val game: Game) {
 	private val tag: String = "[${MainActivity.loggerTag}]ImageUtils"
 	private var myContext = context
 	
-	private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(myContext)
-	private val confidence: Double = sharedPreferences.getInt("confidence", 80).toDouble() / 100
-	private val confidenceAll: Double = sharedPreferences.getInt("confidenceAll", 80).toDouble() / 100
-	private var customScale: Double = sharedPreferences.getString("customScale", "1.0")!!.toDouble()
-	private val debugMode: Boolean = sharedPreferences.getBoolean("debugMode", false)
+	private val matchMethod: Int = Imgproc.TM_CCOEFF_NORMED
+	private val decimalFormat = DecimalFormat("#.###")
+	private val textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+	private val tessBaseAPI: TessBaseAPI
 	
+	////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////
+	// SharedPreferences
+	private val confidence: Double = game.configData.confidence
+	private val confidenceAll: Double = game.configData.confidenceAll
+	private val debugMode: Boolean = game.configData.debugMode
+	private var customScale: Double = game.configData.customScale
+	
+	////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////
+	// Device configuration
 	private val displayWidth: Int = MediaProjectionService.displayWidth
 	private val displayHeight: Int = MediaProjectionService.displayHeight
 	private val isDefault: Boolean = (displayWidth == 1080) // 1080p
-	private val isLowerEnd: Boolean = (displayWidth == 720) // 720p
-	private val isTablet: Boolean = (displayWidth == 1600 && displayHeight == 2560) || (displayWidth == 2560 && displayHeight == 1600) // Galaxy Tab S7 1600x2560 Portrait Mode
-	private val isLandscape: Boolean = (displayWidth == 2560) // Galaxy Tab S7 1600x2560 Landscape Mode
+	val isLowerEnd: Boolean = (displayWidth == 720) // 720p
+	val isTablet: Boolean = (displayWidth == 1600 && displayHeight == 2560) || (displayWidth == 2560 && displayHeight == 1600) // Galaxy Tab S7 1600x2560 Portrait Mode
+	val isLandscape: Boolean = (displayWidth == 2560 && displayHeight == 1600) // Galaxy Tab S7 1600x2560 Landscape Mode
 	
-	////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////
 	// Scales
-	
-	// 720 pixels in width.
 	private val lowerEndScales: MutableList<Double> = mutableListOf(0.60, 0.61, 0.62, 0.63, 0.64, 0.65, 0.67, 0.68, 0.69, 0.70)
-	
-	// Middle ground between 720 and 1080 pixels in width.
 	private val middleEndScales: MutableList<Double> = mutableListOf(
 		0.70, 0.71, 0.72, 0.73, 0.74, 0.75, 0.76, 0.77, 0.78, 0.79, 0.80, 0.81, 0.82, 0.83, 0.84, 0.85, 0.87, 0.88, 0.89, 0.90, 0.91, 0.92, 0.93, 0.94, 0.95, 0.96, 0.97, 0.98, 0.99
 	)
-	
-	// 1600 pixels in width in Portrait Mode.
 	private val tabletPortraitScales: MutableList<Double> = mutableListOf(0.70, 0.71, 0.72, 0.73, 0.74, 0.75)
-	
-	// 2560 pixels in width in Landscape Mode.
 	private val tabletLandscapeScales: MutableList<Double> = mutableListOf(0.55, 0.56, 0.57, 0.58, 0.59, 0.60)
+	
 	////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////
-	
-	// Formatter for decimal places.
-	private val decimalFormat = DecimalFormat("#.###")
-	
-	// Initialize Google's ML OCR.
-	private val textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
-	
-	private val tessBaseAPI: TessBaseAPI
-	
-	// Match method to use for template matching via OpenCV.
-	private val matchMethod: Int = Imgproc.TM_CCOEFF_NORMED
 	
 	companion object {
 		private var matchFilePath: String = ""

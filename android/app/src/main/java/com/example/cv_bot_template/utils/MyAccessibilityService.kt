@@ -3,6 +3,7 @@ package com.example.cv_bot_template.utils
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription
 import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
@@ -12,17 +13,17 @@ import android.os.Build
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.widget.Toast
-import com.example.cv_bot_template.MainActivity
-import com.example.cv_bot_template.R
+import com.example.cv_bot_template.MainActivity.loggerTag
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
 /**
  * Contains the Accessibility service that will allow the bot to programmatically perform gestures on the screen.
+ *
+ * AccessibilityService by itself has a native bug when force-stopped: https://stackoverflow.com/questions/67410929/accessibility-service-does-not-restart-when-manually-re-enabled-after-app-force
  */
 class MyAccessibilityService : AccessibilityService() {
-	private var appName: String = ""
-	private val tag: String = "[${MainActivity.loggerTag}]MyAccessibilityService"
+	private val tag: String = "${loggerTag}MyAccessibilityService"
 	private lateinit var myContext: Context
 	
 	companion object {
@@ -38,15 +39,34 @@ class MyAccessibilityService : AccessibilityService() {
 		fun getInstance(): MyAccessibilityService {
 			return instance
 		}
+		
+		/**
+		 * Check if this service is alive and running.
+		 *
+		 * @param context The application context.
+		 * @return True if the service is alive.
+		 */
+		fun checkStatus(context: Context): Boolean {
+			val manager = context.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+			for (serviceInfo in manager.getRunningServices(Integer.MAX_VALUE)) {
+				if (serviceInfo.service.className.contains("MyAccessibilityService")) {
+					return true
+				}
+			}
+			return false
+		}
 	}
 	
 	override fun onServiceConnected() {
 		instance = this
 		myContext = this
-		appName = myContext.getString(R.string.app_name)
 		
-		Log.d(tag, "Accessibility Service for $appName is now running.")
-		Toast.makeText(myContext, "Accessibility Service for $appName now running.", Toast.LENGTH_SHORT).show()
+		Log.d(tag, "Accessibility Service for GAA is now running.")
+		Toast.makeText(myContext, "Accessibility Service for GAA is now running.", Toast.LENGTH_SHORT).show()
+	}
+	
+	override fun onAccessibilityEvent(event: AccessibilityEvent?) {
+		return
 	}
 	
 	override fun onInterrupt() {
@@ -56,12 +76,8 @@ class MyAccessibilityService : AccessibilityService() {
 	override fun onDestroy() {
 		super.onDestroy()
 		
-		Log.d(tag, "Accessibility Service for $appName is now stopped.")
-		Toast.makeText(myContext, "Accessibility Service for $appName is now stopped.", Toast.LENGTH_SHORT).show()
-	}
-	
-	override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-		return
+		Log.d(tag, "Accessibility Service for GAA is now stopped.")
+		Toast.makeText(myContext, "Accessibility Service for GAA is now stopped.", Toast.LENGTH_SHORT).show()
 	}
 	
 	/**
@@ -78,14 +94,13 @@ class MyAccessibilityService : AccessibilityService() {
 	 *
 	 * @param x The original x location for the tap gesture.
 	 * @param y The original y location for the tap gesture.
-	 * @param folderName The folder name that the image is located under inside the assets folder.
-	 * @param imageName The name of the image to acquire its dimensions for tap location randomization.
+	 * @param buttonName The name of the image to acquire its dimensions for tap location randomization.
 	 * @return Pair of integers that represent the newly randomized tap location.
 	 */
-	private fun randomizeTapLocation(x: Double, y: Double, folderName: String, imageName: String): Pair<Int, Int> {
-		// Get the Bitmap from the template image file inside the specified folder under assets.
+	private fun randomizeTapLocation(x: Double, y: Double, buttonName: String): Pair<Int, Int> {
+		// Get the Bitmap from the template image file inside the specified folder.
 		val templateBitmap: Bitmap
-		myContext.assets?.open("$folderName/$imageName.webp").use { inputStream ->
+		myContext.assets?.open("buttons/$buttonName.webp").use { inputStream ->
 			// Get the Bitmap from the template image file and then start matching.
 			templateBitmap = BitmapFactory.decodeStream(inputStream)
 		}
@@ -124,16 +139,15 @@ class MyAccessibilityService : AccessibilityService() {
 	 *
 	 * @param x The x coordinate of the point.
 	 * @param y The y coordinate of the point.
-	 * @param folderName The folder name that the image is located under inside the assets folder.
-	 * @param imageName The name of the image to acquire its dimensions for tap location randomization.
+	 * @param buttonName The name of the image to tap.
 	 * @param ignoreWait Whether or not to not wait 0.5 seconds after dispatching the gesture.
 	 * @param longPress Whether or not to long press.
 	 * @param taps How many taps to execute.
 	 * @return True if the tap gesture was executed successfully. False otherwise.
 	 */
-	fun tap(x: Double, y: Double, folderName: String, imageName: String, ignoreWait: Boolean = false, longPress: Boolean = false, taps: Int = 1): Boolean {
+	fun tap(x: Double, y: Double, buttonName: String, ignoreWait: Boolean = false, longPress: Boolean = false, taps: Int = 1): Boolean {
 		// Randomize the tapping location.
-		val (newX, newY) = randomizeTapLocation(x, y, folderName, imageName)
+		val (newX, newY) = randomizeTapLocation(x, y, buttonName)
 		Log.d(tag, "Tapping $newX, $newY")
 		
 		// Construct the tap gesture.

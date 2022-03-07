@@ -17,9 +17,10 @@ import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.preference.PreferenceManager
-import com.example.cv_bot_template.bot.Game
-import com.example.cv_bot_template.MainActivity
+import com.example.cv_bot_template.MainActivity.loggerTag
 import com.example.cv_bot_template.R
+import com.example.cv_bot_template.StartModule
+import com.example.cv_bot_template.bot.Game
 import kotlinx.coroutines.runBlocking
 import kotlin.concurrent.thread
 import kotlin.math.roundToInt
@@ -31,8 +32,8 @@ import kotlin.math.roundToInt
  * https://www.tutorialspoint.com/in-android-how-to-register-a-custom-intent-filter-to-a-broadcast-receiver
  */
 class BotService : Service() {
-	private val tag: String = "[${MainActivity.loggerTag}]BotService"
-	private var appName = ""
+	private val tag: String = "${loggerTag}BotService"
+	private var appName: String = ""
 	private lateinit var myContext: Context
 	private lateinit var overlayView: View
 	private lateinit var overlayButton: ImageButton
@@ -65,6 +66,7 @@ class BotService : Service() {
 		myContext = this
 		appName = myContext.getString(R.string.app_name)
 		
+		// Display the overlay view layout on the screen.
 		overlayView = LayoutInflater.from(this).inflate(R.layout.bot_actions, null)
 		windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
 		windowManager.addView(overlayView, overlayLayoutParams)
@@ -93,21 +95,27 @@ class BotService : Service() {
 				} else if (action == MotionEvent.ACTION_UP) {
 					val elapsedTime: Long = event.eventTime - event.downTime
 					if (elapsedTime < 100L) {
-						// Update both the Notification and the overlay button to reflect the current bot status.
+						// Initialize settings.
+						val parser = JSONParser()
+						parser.initializeSettings(myContext)
+						
+						val game = Game(myContext)
+						
 						if (!isRunning) {
 							Log.d(tag, "Bot Service for $appName is now running.")
 							Toast.makeText(myContext, "Bot Service for $appName is now running.", Toast.LENGTH_SHORT).show()
 							isRunning = true
-							NotificationUtils.updateNotification(myContext, isRunning)
+							NotificationUtils.updateNotification(myContext, "Bot is now running")
 							overlayButton.setImageResource(R.drawable.stop_circle_filled)
-							
-							val game = Game(myContext)
 							
 							thread = thread {
 								try {
 									// Clear the Message Log.
 									MessageLog.messageLog.clear()
 									MessageLog.saveCheck = false
+									
+									// Clear the message log in the frontend.
+									StartModule.sendEvent("BotService", "Running")
 									
 									// Run the Discord process on a new Thread.
 									if (PreferenceManager.getDefaultSharedPreferences(myContext).getBoolean("enableDiscord", false)) {
@@ -123,16 +131,20 @@ class BotService : Service() {
 									// Start with the provided settings from SharedPreferences.
 									game.start()
 									
-									val newIntent = Intent("CUSTOM_INTENT")
-									newIntent.putExtra("SUCCESS", "Bot has completed successfully with no errors.")
-									sendBroadcast(newIntent)
+									thread {
+										runBlocking {
+											DiscordUtils.disconnectClient()
+										}
+									}
 									
 									performCleanUp()
 								} catch (e: Exception) {
 									if (e.toString() == "java.lang.InterruptedException") {
-										NotificationUtils.updateNotification(myContext, false, "Bot has completed successfully with no errors.")
+										NotificationUtils.updateNotification(myContext, "Bot has completed successfully with no errors.")
 									} else {
-										NotificationUtils.updateNotification(myContext, false, "Encountered Exception: ${e}. Tap me to see more details.")
+										NotificationUtils.updateNotification(
+											myContext, "Encountered Exception: ${e.javaClass.canonicalName}\nTap me to see more details.", title = "Encountered Exception", displayBigText = true
+										)
 										game.printToLog("$appName encountered an Exception: ${e.stackTraceToString()}", tag = tag, isError = true)
 										
 										if (e.stackTraceToString().length >= 2500) {
@@ -147,9 +159,11 @@ class BotService : Service() {
 											DiscordUtils.queue.add("> Bot encountered exception in Farming Mode: \n${e.stackTraceToString()}")
 										}
 										
-										thread {
-											runBlocking {
-												DiscordUtils.disconnectClient()
+										if (PreferenceManager.getDefaultSharedPreferences(myContext).getBoolean("enableDiscord", false)) {
+											thread {
+												runBlocking {
+													DiscordUtils.disconnectClient()
+												}
 											}
 										}
 									}
@@ -208,7 +222,7 @@ class BotService : Service() {
 	 * @param isException Prevents updating the Notification again if the bot stopped due to an Exception.
 	 */
 	private fun performCleanUp(isException: Boolean = false) {
-		DiscordUtils.queue.add("```diff\n- Terminated connection to Discord API for Example\n```")
+		DiscordUtils.queue.add("```diff\n- Terminated connection to Discord API for Granblue Automation Android\n```")
 		
 		// Save the message log.
 		MessageLog.saveLogToFile(myContext)
@@ -218,7 +232,7 @@ class BotService : Service() {
 		
 		// Update the app's notification with the status.
 		if (!isException) {
-			NotificationUtils.updateNotification(myContext, false, "Bot has completed successfully with no errors.")
+			NotificationUtils.updateNotification(myContext, "Bot has completed successfully with no errors.")
 		}
 		
 		// Reset the overlay button's image on a separate UI thread.
