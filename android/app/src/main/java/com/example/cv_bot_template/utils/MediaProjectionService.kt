@@ -1,4 +1,4 @@
-package com.example.android_cv_bot_template.utils
+package com.example.cv_bot_template.utils
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -23,9 +23,8 @@ import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import com.example.android_cv_bot_template.MainActivity
-import com.example.android_cv_bot_template.R
-import kotlinx.coroutines.*
+import com.example.cv_bot_template.MainActivity
+import com.example.cv_bot_template.R
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException

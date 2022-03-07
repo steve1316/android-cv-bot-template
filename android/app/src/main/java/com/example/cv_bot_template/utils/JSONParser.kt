@@ -1,8 +1,8 @@
-package com.example.android_cv_bot_template.utils
+package com.example.cv_bot_template.utils
 
 import android.content.Context
 import com.beust.klaxon.JsonReader
-import com.example.android_cv_bot_template.data.ConfigData
+import com.example.cv_bot_template.data.ConfigData
 import java.io.File
 import java.io.StringReader
 

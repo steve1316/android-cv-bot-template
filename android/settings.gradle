@@ -1,4 +1,4 @@
-rootProject.name = "Granblue Automation Android"
+rootProject.name = "CV Bot Template"
 include ':react-native-fs'
 project(':react-native-fs').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fs/android')
 include ':opencv'

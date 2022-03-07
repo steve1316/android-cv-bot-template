@@ -1,10 +1,10 @@
-package com.example.android_cv_bot_template.utils
+package com.example.cv_bot_template.utils
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.preference.PreferenceManager
-import com.example.android_cv_bot_template.MainActivity
+import com.example.cv_bot_template.MainActivity
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.event.gateway.ReadyEvent

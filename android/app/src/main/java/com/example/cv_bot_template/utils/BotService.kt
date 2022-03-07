@@ -1,11 +1,9 @@
-package com.example.android_cv_bot_template.utils
+package com.example.cv_bot_template.utils
 
 import android.annotation.SuppressLint
 import android.app.Service
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.PixelFormat
 import android.os.Build
 import android.os.Handler
@@ -19,9 +17,9 @@ import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.preference.PreferenceManager
-import com.example.android_cv_bot_template.MainActivity
-import com.example.android_cv_bot_template.R
-import com.example.android_cv_bot_template.bot.Game
+import com.example.cv_bot_template.bot.Game
+import com.example.cv_bot_template.MainActivity
+import com.example.cv_bot_template.R
 import kotlinx.coroutines.runBlocking
 import kotlin.concurrent.thread
 import kotlin.math.roundToInt

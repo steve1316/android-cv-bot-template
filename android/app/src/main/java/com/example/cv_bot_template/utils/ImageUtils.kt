@@ -1,4 +1,4 @@
-package com.example.android_cv_bot_template.utils
+package com.example.cv_bot_template.utils
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -7,8 +7,8 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.util.Log
 import androidx.preference.PreferenceManager
-import com.example.android_cv_bot_template.MainActivity
-import com.example.android_cv_bot_template.bot.Game
+import com.example.cv_bot_template.MainActivity
+import com.example.cv_bot_template.bot.Game
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions

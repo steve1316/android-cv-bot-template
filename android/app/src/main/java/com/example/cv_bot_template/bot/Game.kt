@@ -1,14 +1,14 @@
-package com.example.android_cv_bot_template.bot
+package com.example.cv_bot_template.bot
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.preference.PreferenceManager
-import com.example.android_cv_bot_template.MainActivity
-import com.example.android_cv_bot_template.utils.DiscordUtils
-import com.example.android_cv_bot_template.utils.ImageUtils
-import com.example.android_cv_bot_template.utils.MessageLog
-import com.example.android_cv_bot_template.utils.MyAccessibilityService
+import com.example.cv_bot_template.MainActivity
+import com.example.cv_bot_template.utils.DiscordUtils
+import com.example.cv_bot_template.utils.ImageUtils
+import com.example.cv_bot_template.utils.MessageLog
+import com.example.cv_bot_template.utils.MyAccessibilityService
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit

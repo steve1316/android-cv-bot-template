@@ -1,4 +1,4 @@
-package com.example.android_cv_bot_template.utils
+package com.example.cv_bot_template.utils
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -8,8 +8,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import com.example.android_cv_bot_template.MainActivity
-import com.example.android_cv_bot_template.R
+import com.example.cv_bot_template.MainActivity
+import com.example.cv_bot_template.R
 
 /**
  * Contains the utility functions for creating a Notification.

@@ -1,4 +1,4 @@
-package com.example.android_cv_bot_template.data
+package com.example.cv_bot_template.data
 
 class ConfigData {
 	companion object {

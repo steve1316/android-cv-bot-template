@@ -1,9 +1,9 @@
-package com.example.android_cv_bot_template.utils
+package com.example.cv_bot_template.utils
 
 import android.content.Context
 import android.os.Build
 import android.util.Log
-import com.example.android_cv_bot_template.MainActivity
+import com.example.cv_bot_template.MainActivity
 import java.io.File
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
