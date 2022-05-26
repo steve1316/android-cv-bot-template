@@ -1,0 +1,13 @@
+<AppUpdater>
+  <update>
+    <latestVersion>2.0.0</latestVersion>
+    <url>https://github.com/steve1316/android-cv-bot-template/releases</url>
+    <releaseNotes>
+v2.0.0 - Changelog
+
+- Migration of Android UI to React Native UI to standardize all my projects visuals moving forward.
+- Includes latest changes to framework including replacing Kord with Javacord for Discord integration.
+- Since project file structure was changed, updating from v1.0.2 to v2.0.0 from within the app is not possible.
+    </releaseNotes>
+  </update>
+</AppUpdater>

@@ -6,7 +6,7 @@
 
 > Some additional usage examples at [Uma Android Training Helper](https://github.com/steve1316/uma-android-training-helper) and [Uma Android Automation](https://github.com/steve1316/uma-android-automation)
 
-This template project serves as a starter point for Android botting or as a general framework that relies on Computer Vision template matching via OpenCV and executing gestures like tapping and scrolling to accomplish a automation goal. It uses MediaProjection Service to programmatically take screenshots and the Accessibility Service to execute gestures. The framework is well annotated with documentation to serve as explanations and usage hints.
+This template project serves as a starter point for Android botting that relies on Computer Vision template matching via OpenCV and executing gestures like tapping and scrolling to accomplish a automation goal. It uses MediaProjection Service to programmatically take screenshots and the Accessibility Service to execute gestures. The framework is well annotated with documentation to serve as explanations and usage hints.
 
 https://user-images.githubusercontent.com/18709555/118407909-c933be00-b637-11eb-92c2-3c4acd355aff.mp4
 
@@ -25,23 +25,16 @@ https://user-images.githubusercontent.com/18709555/118407909-c933be00-b637-11eb-
 
 1. [Android Device or Emulator (Nougat 7.0+)](https://developer.android.com/about/versions)
     1. (Experimental) Tablets supported with minimum 1600 pixel width like the Galaxy Tab S7. If oriented portrait, browsers like Chrome needs to have Desktop Mode turned off and situated on the left half of the tablet. If landscape, browsers like Chrome needs to have Desktop Mode turned on and situated on the left half of the tablet.
-    2. Tested emulator was Bluestacks 5 with the following settings:
-        - P64 (Beta)
-        - 1080x1920 (Portrait Mode as emulators do not have a way to tell the bot that it rotated.)
-        - 240 DPI
-        - 4+ GB of Memory
+    2. Tested emulator was Bluestacks 5. Make sure to have the device be in Portrait Mode BEFORE starting the bot as emulators do not have a way to tell the bot that it rotated.
 
 # Instructions
 
 1. Download the project and extract.
-2. Go to `https://opencv.org/releases/` and download OpenCV 4.5.1 (make sure to download the Android version of OpenCV) and extract it.
-3. Create a new folder inside the root of the `android` folder named `opencv` and copy the extracted files in `/OpenCV-android-sdk/sdk/` from Step 2 into it.
-4. Build the Javascript portion of the project by running `yarn install` in the root of the `/src/` folder as well.
-5. You can now build and run on your Android Device or create your own .apk file.
-6. `Clean Project` and then `Rebuild Project` under the Build menu.
-7. After building is complete, you can test the capability of this framework in the Android Studio's emulator.
-8. After you familiarized yourself with what the framework can do, you can refactor the application's package name in various parts of the project and in `settings.gradle`.
-9. If you want your application automatically check for the latest updates from your GitHub repo using `AppUpdater`, do the following:
+2. Download the Android version of OpenCV and extract its `sdk` folder contents into a newly created folder named `opencv` in the root of the project folder.
+3. `Clean Project` and then `Rebuild Project` under the Build menu.
+4. After building is complete, you can test the capability of this framework in the Android Studio's emulator.
+5. After you familiarized yourself with what the framework can do, you can refactor the application's package name in various parts of the project and in `settings.gradle`.
+6. If you want your application automatically check for the latest updates from your GitHub repo using `AppUpdater`, do the following:
     1. Upload a .xml file to your Github repo using the provided example `app/update.xml` with your updated version number, release notes, and link to the `Releases` page of your GitHub repo.
     2. Update the `setUpdateXML()` with the `RAW` link to your new update.xml.
     3. Now when a user has a lower version number compared to the latest version in your `Releases` page in your GitHub repo, they will be prompted with a dialog window like this:
@@ -53,7 +46,7 @@ https://user-images.githubusercontent.com/18709555/118407909-c933be00-b637-11eb-
 1. `ImageUtils` class reads in images in `.webp` format to reduce apk file size. You can change this if you wish.
 2. All images are recommended to be categorized in separate folders inside the /assets/ folder. Be sure to update the `folderName` variables inside the various functions in `ImageUtils`. Or you could remove the need to organize them and just put all image assets into one place. Just make sure to update the code references to the `folderName` variables.
 3. When working on a horizontal screen, the coordinate axis gets flipped as well. So if your vertical orientation dimensions is 1080x2400, then the horizontal orientation dimensions gets flipped to 2400x1080.
-4. (on the `old` branch) If you want to create nested Fragment Preference settings, there is an example provided to showcase how to do that in SettingsFragment.kt and mobile_navigation.xml.
+4. If you want to create nested Fragment Preference settings, there is an example provided to showcase how to do that in SettingsFragment.kt and mobile_navigation.xml.
 
 # Important Classes to be familiar with
 
