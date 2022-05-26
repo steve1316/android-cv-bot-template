@@ -36,7 +36,7 @@ https://user-images.githubusercontent.com/18709555/118407909-c933be00-b637-11eb-
 1. Download the project and extract.
 2. Go to `https://opencv.org/releases/` and download OpenCV 4.5.1 (make sure to download the Android version of OpenCV) and extract it.
 3. Create a new folder inside the root of the `android` folder named `opencv` and copy the extracted files in `/OpenCV-android-sdk/sdk/` from Step 2 into it.
-4. Build the Javascript portion of the project by running `yarn install` in the root of the `/src/` folder as well.
+4. Build the Javascript portion of the project by running `yarn install` in the root of the project folder as well.
 5. You can now build and run on your Android Device or create your own .apk file.
 6. `Clean Project` and then `Rebuild Project` under the Build menu.
 7. After building is complete, you can test the capability of this framework in the Android Studio's emulator.
