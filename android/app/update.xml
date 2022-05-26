@@ -1,12 +1,13 @@
 <AppUpdater>
   <update>
-    <latestVersion>1.0.1</latestVersion>
+    <latestVersion>2.0.0</latestVersion>
     <url>https://github.com/steve1316/android-cv-bot-template/releases</url>
     <releaseNotes>
-v1.0.1 - Changelog
+v2.0.0 - Changelog
 
-- Having the v1.0.0 already installed will trigger the update notification for this version.
-- v1.0.1 has the latest changes as of 09/14/21 including dropping the requirements to be at least Android 7.0+ (Nougat) making it compatible with emulators like Bluestacks.
+- Migration of Android UI to React Native UI to standardize all my projects visuals moving forward.
+- Includes latest changes to framework including replacing Kord with Javacord for Discord integration.
+- Since project file structure was changed, updating from v1.0.2 to v2.0.0 from within the app is not possible.
     </releaseNotes>
   </update>
 </AppUpdater>
