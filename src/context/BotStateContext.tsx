@@ -1,9 +1,13 @@
 import React, { createContext, useState } from "react"
 
-export interface Settings {}
+export interface Settings {
+    property1: boolean
+}
 
 // Set the default settings.
-export const defaultSettings: Settings = {}
+export const defaultSettings: Settings = {
+    property1: false,
+}
 
 interface IProviderProps {
     readyStatus: boolean
@@ -14,8 +18,6 @@ interface IProviderProps {
     setStartBot: (startBot: boolean) => void
     stopBot: boolean
     setStopBot: (stopBot: boolean) => void
-    refreshAlert: boolean
-    setRefreshAlert: (refreshAlert: boolean) => void
     settings: Settings
     setSettings: (settings: Settings) => void
 }
@@ -28,7 +30,6 @@ export const BotStateProvider = ({ children }: any): JSX.Element => {
     const [isBotRunning, setIsBotRunning] = useState<boolean>(false)
     const [startBot, setStartBot] = useState<boolean>(false)
     const [stopBot, setStopBot] = useState<boolean>(false)
-    const [refreshAlert, setRefreshAlert] = useState<boolean>(false)
 
     const [settings, setSettings] = useState<Settings>(defaultSettings)
 
@@ -41,8 +42,6 @@ export const BotStateProvider = ({ children }: any): JSX.Element => {
         setStartBot,
         stopBot,
         setStopBot,
-        refreshAlert,
-        setRefreshAlert,
         settings,
         setSettings,
     }

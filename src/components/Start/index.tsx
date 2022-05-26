@@ -106,7 +106,7 @@ const Start = () => {
                         mlc.setMessageLog([
                             ...mlc.messageLog,
                             `\n[ERROR] Error reading settings from path ${path}: \n${e}`,
-                            "\nNote that GAA sometimes corrupts the settings.json when saving. Automatic fix was not successful.",
+                            "\nNote that the application sometimes corrupts the settings.json when saving. Automatic fix was not successful.",
                         ])
                     }
                 } else if (!e.message.includes("No such file or directory")) {
@@ -137,7 +137,9 @@ const Start = () => {
     }
 
     // Determine whether the program is ready to start.
-    const handleReady = () => {}
+    const handleReady = () => {
+        bsc.setReadyStatus(bsc.settings.property1)
+    }
 
     return null
 }
