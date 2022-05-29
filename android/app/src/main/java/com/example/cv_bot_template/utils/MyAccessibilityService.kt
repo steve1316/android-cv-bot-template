@@ -100,7 +100,7 @@ class MyAccessibilityService : AccessibilityService() {
 	private fun randomizeTapLocation(x: Double, y: Double, buttonName: String): Pair<Int, Int> {
 		// Get the Bitmap from the template image file inside the specified folder.
 		val templateBitmap: Bitmap
-		myContext.assets?.open("buttons/$buttonName.webp").use { inputStream ->
+		myContext.assets?.open("images/$buttonName.webp").use { inputStream ->
 			// Get the Bitmap from the template image file and then start matching.
 			templateBitmap = BitmapFactory.decodeStream(inputStream)
 		}

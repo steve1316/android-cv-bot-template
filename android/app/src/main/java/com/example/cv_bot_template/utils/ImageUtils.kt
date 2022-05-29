@@ -1,12 +1,10 @@
 package com.example.cv_bot_template.utils
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.util.Log
-import androidx.preference.PreferenceManager
 import com.example.cv_bot_template.MainActivity
 import com.example.cv_bot_template.bot.Game
 import com.google.mlkit.vision.common.InputImage
@@ -29,7 +27,7 @@ import java.text.DecimalFormat
  * Utility functions for image processing via CV like OpenCV.
  */
 class ImageUtils(context: Context, private val game: Game) {
-	private val tag: String = "[${MainActivity.loggerTag}]ImageUtils"
+	private val tag: String = "${MainActivity.loggerTag}ImageUtils"
 	private var myContext = context
 	
 	private val matchMethod: Int = Imgproc.TM_CCOEFF_NORMED
@@ -485,12 +483,12 @@ class ImageUtils(context: Context, private val game: Game) {
 	 * @param testMode Flag to test and get a valid scale for device compatibility.
 	 * @return Point object containing the location of the match or null if not found.
 	 */
-	fun findButton(templateName: String, tries: Int = 5, region: IntArray = intArrayOf(0, 0, 0, 0), suppressError: Boolean = false, testMode: Boolean = false): Point? {
-		val folderName = "buttons"
+	fun findImage(templateName: String, tries: Int = 5, region: IntArray = intArrayOf(0, 0, 0, 0), suppressError: Boolean = false, testMode: Boolean = false): Point? {
+		val folderName = "images"
 		var numberOfTries = tries
 		
 		if (debugMode) {
-			game.printToLog("\n[DEBUG] Starting process to find the ${templateName.uppercase()} button image...", tag = tag)
+			game.printToLog("\n[DEBUG] Starting process to find the ${templateName.uppercase()} image...", tag = tag)
 		}
 		
 		// If Test Mode is enabled, prepare for it by setting initial scale.
@@ -514,13 +512,13 @@ class ImageUtils(context: Context, private val game: Game) {
 					numberOfTries -= 1
 					if (numberOfTries <= 0) {
 						if (!suppressError) {
-							game.printToLog("[WARNING] Failed to find the ${templateName.uppercase()} button.", tag = tag)
+							game.printToLog("[WARNING] Failed to find the ${templateName.uppercase()} image.", tag = tag)
 						}
 						
 						break
 					}
 					
-					Log.d(tag, "Failed to find the ${templateName.uppercase()} button. Trying again...")
+					Log.d(tag, "Failed to find the ${templateName.uppercase()} image. Trying again...")
 					
 					if (!testMode) {
 						game.wait(0.5)
@@ -560,15 +558,15 @@ class ImageUtils(context: Context, private val game: Game) {
 	 * @return True if the current location is at the specified location. False otherwise.
 	 */
 	fun confirmLocation(templateName: String, tries: Int = 5, region: IntArray = intArrayOf(0, 0, 0, 0), suppressError: Boolean = false): Boolean {
-		val folderName = "headers"
+		val folderName = "locations"
 		var numberOfTries = tries
 		
 		if (debugMode) {
-			game.printToLog("\n[DEBUG] Starting process to find the ${templateName.uppercase()} header image...", tag = tag)
+			game.printToLog("\n[DEBUG] Starting process to find the ${templateName.uppercase()} location image...", tag = tag)
 		}
 		
 		while (numberOfTries > 0) {
-			val (sourceBitmap, templateBitmap) = getBitmaps(templateName + "_header", folderName)
+			val (sourceBitmap, templateBitmap) = getBitmaps(templateName, folderName)
 			
 			if (sourceBitmap != null && templateBitmap != null) {
 				val resultFlag: Boolean = match(sourceBitmap, templateBitmap, region)
@@ -596,7 +594,7 @@ class ImageUtils(context: Context, private val game: Game) {
 	}
 	
 	/**
-	 * Finds all occurrences of the specified image in the buttons folder. Has an optional parameter to specify looking in the items folder instead.
+	 * Finds all occurrences of the specified image. Has an optional parameter to specify looking in the items folder instead.
 	 *
 	 * @param templateName File name of the template image.
 	 * @param folderName Name of the folder that the template image is in.
@@ -640,10 +638,10 @@ class ImageUtils(context: Context, private val game: Game) {
 		game.printToLog("[INFO] Now waiting for $templateName to vanish from the screen...", tag = tag)
 		
 		var remaining = timeout
-		if (findButton(templateName, tries = 1, region = region, suppressError = suppressError) == null) {
+		if (findImage(templateName, tries = 1, region = region, suppressError = suppressError) == null) {
 			return true
 		} else {
-			while (findButton(templateName, tries = 1, region = region, suppressError = suppressError) != null) {
+			while (findImage(templateName, tries = 1, region = region, suppressError = suppressError) != null) {
 				game.wait(1.0)
 				remaining -= 1
 				if (remaining <= 0) {
@@ -716,7 +714,7 @@ class ImageUtils(context: Context, private val game: Game) {
 		game.printToLog("[INFO] Training file loaded.\n", tag = tag)
 		
 		// Read in the new screenshot and crop it.
-		var cvImage = Imgcodecs.imread("${matchFilePath}/source.png", Imgcodecs.IMREAD_GRAYSCALE)
+		var cvImage = Imgcodecs.imread("$matchFilePath/source.png", Imgcodecs.IMREAD_GRAYSCALE)
 		cvImage = cvImage.submat(0, 500, 0, 500)
 		
 		// Save the cropped image before converting it to black and white in order to troubleshoot issues related to differing device sizes and cropping.
