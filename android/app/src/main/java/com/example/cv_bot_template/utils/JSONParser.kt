@@ -12,7 +12,7 @@ import java.io.File
 
 class JSONParser {
 	/**
-	 * Initialize settings into SharedPreferences from the JSON file.
+	 * Initialize settings from the JSON file.
 	 *
 	 * @param myContext The application context.
 	 */
@@ -25,34 +25,9 @@ class JSONParser {
 
 		//////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////
-		// Manually save all key-value pairs from JSON object to SharedPreferences.
-		//
-		// Add more try-catch blocks to cover each JSONArray object as you need.
 
-		val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(myContext)
-
-		try {
-			val twitterObj = jObj.getJSONObject("twitter")
-			sharedPreferences.edit {
-				putString("twitterAPIKey", twitterObj.getString("twitterAPIKey"))
-				putString("twitterAPIKeySecret", twitterObj.getString("twitterAPIKeySecret"))
-				putString("twitterAccessToken", twitterObj.getString("twitterAccessToken"))
-				putString("twitterAccessTokenSecret", twitterObj.getString("twitterAccessTokenSecret"))
-				commit()
-			}
-		} catch (e: Exception) {
-		}
-
-		try {
-			val discordObj = jObj.getJSONObject("discord")
-			sharedPreferences.edit {
-				putBoolean("enableDiscordNotifications", discordObj.getBoolean("enableDiscordNotifications"))
-				putString("discordToken", discordObj.getString("discordToken"))
-				putString("discordUserID", discordObj.getString("discordUserID"))
-				commit()
-			}
-		} catch (e: Exception) {
-		}
+		// Here you can parse out each property from the JSONObject via key iteration. You can create a static class
+		// elsewhere to hold the JSON data. Or you can save them all into SharedPreferences.
 	}
 
 	/**
