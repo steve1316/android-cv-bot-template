@@ -1,12 +1,11 @@
 <AppUpdater>
   <update>
-    <latestVersion>2.0.1</latestVersion>
+    <latestVersion>1.0.0</latestVersion>
     <url>https://github.com/steve1316/android-cv-bot-template/releases</url>
     <releaseNotes>
-v2.0.1 - Changelog
+v1.0.0 - Changelog
 
-- Added basic component usage including snackbar and conditional rendering example.
-- Updated the raw url for the update.xml so that AppUpdater can work properly.
+
     </releaseNotes>
   </update>
 </AppUpdater>
