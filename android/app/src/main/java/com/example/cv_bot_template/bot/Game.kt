@@ -1,9 +1,7 @@
 package com.example.cv_bot_template.bot
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.util.Log
-import androidx.preference.PreferenceManager
 import com.example.cv_bot_template.MainActivity.loggerTag
 import com.example.cv_bot_template.data.ConfigData
 import com.example.cv_bot_template.utils.DiscordUtils
@@ -19,13 +17,13 @@ import java.util.concurrent.TimeUnit
  */
 class Game(private val myContext: Context) {
 	private val tag: String = "${loggerTag}Game"
-	
+
 	private val startTime: Long = System.currentTimeMillis()
-	
+
 	val configData: ConfigData = ConfigData(myContext)
 	val imageUtils: ImageUtils = ImageUtils(myContext, this)
 	val gestureUtils: MyAccessibilityService = MyAccessibilityService.getInstance()
-	
+
 	/**
 	 * Returns a formatted string of the elapsed time since the bot started as HH:MM:SS format.
 	 *
@@ -35,7 +33,7 @@ class Game(private val myContext: Context) {
 	 */
 	private fun printTime(): String {
 		val elapsedMillis: Long = System.currentTimeMillis() - startTime
-		
+
 		return String.format(
 			"%02d:%02d:%02d",
 			TimeUnit.MILLISECONDS.toHours(elapsedMillis),
@@ -43,7 +41,7 @@ class Game(private val myContext: Context) {
 			TimeUnit.MILLISECONDS.toSeconds(elapsedMillis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(elapsedMillis))
 		)
 	}
-	
+
 	/**
 	 * Print the specified message to debug console and then saves the message to the log.
 	 *
@@ -57,7 +55,7 @@ class Game(private val myContext: Context) {
 		} else {
 			Log.e(tag, message)
 		}
-		
+
 		// Remove the newline prefix if needed and place it where it should be.
 		if (message.startsWith("\n")) {
 			val newMessage = message.removePrefix("\n")
@@ -66,7 +64,7 @@ class Game(private val myContext: Context) {
 			MessageLog.messageLog.add(printTime() + " " + message)
 		}
 	}
-	
+
 	/**
 	 * Wait the specified seconds to account for ping or loading.
 	 *
@@ -77,7 +75,7 @@ class Game(private val myContext: Context) {
 			delay((seconds * 1000).toLong())
 		}
 	}
-	
+
 	/**
 	 * Bot will begin automation here.
 	 *
@@ -85,21 +83,21 @@ class Game(private val myContext: Context) {
 	 */
 	fun start(): Boolean {
 		val startTime: Long = System.currentTimeMillis()
-		
+
 		if (configData.debugMode) {
 			printToLog("\n[DEBUG] I am starting here but as a debugging message!")
 		} else {
 			printToLog("\n[INFO] I am starting here!")
 		}
-		
+
 		printToLog("\n[INFO] I am ending here!")
-		
+
 		val endTime: Long = System.currentTimeMillis()
 		val runTime: Long = endTime - startTime
 		Log.d(tag, "Total Runtime: ${runTime}ms")
-		
+
 		DiscordUtils.queue.add("Total Runtime: ${runTime}ms")
-		
+
 		return true
 	}
 }
