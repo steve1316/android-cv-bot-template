@@ -61,8 +61,8 @@ class MyAccessibilityService : AccessibilityService() {
 		instance = this
 		myContext = this
 
-		Log.d(tag, "Accessibility Service for GAA is now running.")
-		Toast.makeText(myContext, "Accessibility Service for GAA is now running.", Toast.LENGTH_SHORT).show()
+		Log.d(tag, "Accessibility Service is now running.")
+		Toast.makeText(myContext, "Accessibility Service is now running.", Toast.LENGTH_SHORT).show()
 	}
 
 	override fun onAccessibilityEvent(event: AccessibilityEvent?) {
@@ -76,8 +76,8 @@ class MyAccessibilityService : AccessibilityService() {
 	override fun onDestroy() {
 		super.onDestroy()
 
-		Log.d(tag, "Accessibility Service for GAA is now stopped.")
-		Toast.makeText(myContext, "Accessibility Service for GAA is now stopped.", Toast.LENGTH_SHORT).show()
+		Log.d(tag, "Accessibility Service is now stopped.")
+		Toast.makeText(myContext, "Accessibility Service is now stopped.", Toast.LENGTH_SHORT).show()
 	}
 
 	/**

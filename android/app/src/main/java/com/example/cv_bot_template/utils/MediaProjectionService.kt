@@ -289,8 +289,8 @@ class MediaProjectionService : Service() {
 				// Now set the MediaProjection object to null to eliminate the "Invalid media projection" error.
 				mediaProjection = null
 
-				Log.d(tag, "MediaProjection Service for GAA has stopped for this context: ${myContext.applicationInfo}.")
-				Toast.makeText(myContext, "MediaProjection Service for GAA has stopped.", Toast.LENGTH_SHORT).show()
+				Log.d(tag, "MediaProjection Service has stopped for this context: ${myContext.applicationInfo}.")
+				Toast.makeText(myContext, "MediaProjection Service has stopped.", Toast.LENGTH_SHORT).show()
 
 				// Send a event to the React Native frontend.
 				StartModule.sendEvent("MediaProjectionService", "Not Running")
