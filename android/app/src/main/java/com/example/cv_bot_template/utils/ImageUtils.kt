@@ -48,10 +48,10 @@ class ImageUtils(context: Context, private val game: Game) {
 	// Device configuration
 	private val displayWidth: Int = MediaProjectionService.displayWidth
 	private val displayHeight: Int = MediaProjectionService.displayHeight
-	private val isDefault: Boolean = (displayWidth == 1080) // 1080p
-	val isLowerEnd: Boolean = (displayWidth == 720) // 720p
-	val isTablet: Boolean = (displayWidth == 1600 && displayHeight == 2560) || (displayWidth == 2560 && displayHeight == 1600) // Galaxy Tab S7 1600x2560 Portrait Mode
-	val isLandscape: Boolean = (displayWidth == 2560 && displayHeight == 1600) // Galaxy Tab S7 1600x2560 Landscape Mode
+	private val is1080p: Boolean = (displayWidth == 1080) || (displayHeight == 1080) // 1080p Portrait or Landscape Mode.
+	val is720p: Boolean = (displayWidth == 720) || (displayHeight == 720) // 720p
+	val isTabletPortrait: Boolean = (displayWidth == 1600 && displayHeight == 2560) || (displayWidth == 2560 && displayHeight == 1600) // Galaxy Tab S7 1600x2560 Portrait Mode
+	val isTabletLandscape: Boolean = (displayWidth == 2560 && displayHeight == 1600) // Galaxy Tab S7 1600x2560 Landscape Mode
 
 	// Scales
 	private val lowerEndScales: MutableList<Double> = mutableListOf(0.60, 0.61, 0.62, 0.63, 0.64, 0.65, 0.67, 0.68, 0.69, 0.70)
@@ -113,16 +113,16 @@ class ImageUtils(context: Context, private val game: Game) {
 			customScale != 1.0 && useSingleScale -> {
 				mutableListOf(customScale)
 			}
-			isLowerEnd -> {
+			is720p -> {
 				lowerEndScales.toMutableList()
 			}
-			!isLowerEnd && !isDefault && !isTablet -> {
+			!is720p && !is1080p && !isTabletPortrait -> {
 				middleEndScales.toMutableList()
 			}
-			isTablet && isLandscape -> {
+			isTabletPortrait && isTabletLandscape -> {
 				tabletLandscapeScales.toMutableList()
 			}
-			isTablet && !isLandscape -> {
+			isTabletPortrait && !isTabletLandscape -> {
 				tabletPortraitScales.toMutableList()
 			}
 			else -> {
@@ -229,16 +229,16 @@ class ImageUtils(context: Context, private val game: Game) {
 			customScale != 1.0 -> {
 				mutableListOf(customScale - 0.02, customScale - 0.01, customScale, customScale + 0.01, customScale + 0.02, customScale + 0.03, customScale + 0.04)
 			}
-			isLowerEnd -> {
+			is720p -> {
 				lowerEndScales.toMutableList()
 			}
-			!isLowerEnd && !isDefault && !isTablet -> {
+			!is720p && !is1080p && !isTabletPortrait -> {
 				middleEndScales.toMutableList()
 			}
-			isTablet && isLandscape -> {
+			isTabletPortrait && isTabletLandscape -> {
 				tabletLandscapeScales.toMutableList()
 			}
-			isTablet && !isLandscape -> {
+			isTabletPortrait && !isTabletLandscape -> {
 				tabletPortraitScales.toMutableList()
 			}
 			else -> {
