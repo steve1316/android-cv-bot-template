@@ -2,11 +2,22 @@ import React, { createContext, useState } from "react"
 
 export interface Settings {
     property1: boolean
+
+    discord: {
+        enableDiscordNotifications: boolean
+        discordToken: string
+        discordUserID: string
+    }
 }
 
 // Set the default settings.
 export const defaultSettings: Settings = {
     property1: false,
+    discord: {
+        enableDiscordNotifications: false,
+        discordToken: "",
+        discordUserID: "",
+    },
 }
 
 interface IProviderProps {

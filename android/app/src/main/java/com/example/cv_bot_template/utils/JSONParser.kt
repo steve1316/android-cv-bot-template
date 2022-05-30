@@ -28,15 +28,36 @@ class JSONParser {
 
 		// Here you can parse out each property from the JSONObject via key iteration. You can create a static class
 		// elsewhere to hold the JSON data. Or you can save them all into SharedPreferences.
+
+		val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(myContext)
+
+		try {
+			val discordObj = jObj.getJSONObject("discord")
+
+			sharedPreferences.edit {
+				discordObj.keys().forEach { key ->
+					when (key) {
+						"enableDiscordNotifications" -> {
+							putBoolean(key, discordObj[key] as Boolean)
+						}
+						else -> {
+							putString(key, discordObj[key] as String)
+						}
+					}
+				}
+
+				commit()
+			}
+		} catch(e: Exception) {}
 	}
 
 	/**
-	 * Convert JSONArray to ArrayList object.
+	 * Convert JSONArray to ArrayList<String> object.
 	 *
 	 * @param jsonArray The JSONArray object to be converted.
-	 * @return The converted ArrayList object.
+	 * @return The converted ArrayList<String> object.
 	 */
-	private fun toArrayList(jsonArray: JSONArray): ArrayList<String> {
+	private fun toStringArrayList(jsonArray: JSONArray): ArrayList<String> {
 		val newArrayList: ArrayList<String> = arrayListOf()
 
 		var i = 0

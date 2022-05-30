@@ -118,7 +118,7 @@ class BotService : Service() {
 									StartModule.sendEvent("BotService", "Running")
 
 									// Run the Discord process on a new Thread.
-									if (PreferenceManager.getDefaultSharedPreferences(myContext).getBoolean("enableDiscord", false)) {
+									if (PreferenceManager.getDefaultSharedPreferences(myContext).getBoolean("enableDiscordNotifications", false)) {
 										val discordUtils = DiscordUtils(myContext)
 										thread {
 											runBlocking {
@@ -131,13 +131,13 @@ class BotService : Service() {
 									// Start with the provided settings from SharedPreferences.
 									game.start()
 
+									performCleanUp()
+
 									thread {
 										runBlocking {
 											DiscordUtils.disconnectClient()
 										}
 									}
-
-									performCleanUp()
 								} catch (e: Exception) {
 									if (e.toString() == "java.lang.InterruptedException") {
 										NotificationUtils.updateNotification(myContext, "Bot has completed successfully with no errors.")
@@ -159,7 +159,7 @@ class BotService : Service() {
 											DiscordUtils.queue.add("> Bot encountered exception in Farming Mode: \n${e.stackTraceToString()}")
 										}
 
-										if (PreferenceManager.getDefaultSharedPreferences(myContext).getBoolean("enableDiscord", false)) {
+										if (PreferenceManager.getDefaultSharedPreferences(myContext).getBoolean("enableDiscordNotifications", false)) {
 											thread {
 												runBlocking {
 													DiscordUtils.disconnectClient()
@@ -222,7 +222,7 @@ class BotService : Service() {
 	 * @param isException Prevents updating the Notification again if the bot stopped due to an Exception.
 	 */
 	private fun performCleanUp(isException: Boolean = false) {
-		DiscordUtils.queue.add("```diff\n- Terminated connection to Discord API for Granblue Automation Android\n```")
+		DiscordUtils.queue.add("```diff\n- Terminated connection to Discord API for $appName\n```")
 
 		// Save the message log.
 		MessageLog.saveLogToFile(myContext)

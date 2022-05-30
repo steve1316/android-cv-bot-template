@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.preference.PreferenceManager
 import com.example.cv_bot_template.MainActivity.loggerTag
+import com.example.cv_bot_template.R
 import org.javacord.api.DiscordApi
 import org.javacord.api.DiscordApiBuilder
 import org.javacord.api.entity.channel.PrivateChannel
@@ -17,11 +18,12 @@ import java.util.*
  * This class takes care of notifying users of status updates via Discord private DMs.
  */
 class DiscordUtils(myContext: Context) {
-	private val tag: String = "${loggerTag}_DiscordUtils"
+	private val tag: String = "${loggerTag}DiscordUtils"
+	private var appName: String = myContext.getString(R.string.app_name)
 
 	private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(myContext)
 	private val discordToken: String = sharedPreferences.getString("discordToken", "")!!
-	private val discordUserID: String = sharedPreferences.getString("userID", "")!!
+	private val discordUserID: String = sharedPreferences.getString("discordUserID", "")!!
 
 	companion object {
 		val queue: Queue<String> = LinkedList()
@@ -49,12 +51,13 @@ class DiscordUtils(myContext: Context) {
 
 			Log.d(tag, "Successfully fetched reference to user and their private channel.")
 
-			queue.add("```diff\n+ Successful connection to Discord API for Granblue Automation Android\n```")
+			queue.add("```diff\n+ Successful mobile connection to Discord API for $appName\n```")
 
 			// Loop and send any messages inside the Queue.
 			while (true) {
 				if (queue.isNotEmpty()) {
 					val message = queue.remove()
+					Log.d(tag, "Sending the following message to Discord DM: $message")
 					sendMessage(message)
 
 					if (message.contains("Terminated connection to Discord API")) {

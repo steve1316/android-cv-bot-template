@@ -1,7 +1,9 @@
 package com.example.cv_bot_template.bot
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
+import androidx.preference.PreferenceManager
 import com.example.cv_bot_template.MainActivity.loggerTag
 import com.example.cv_bot_template.data.ConfigData
 import com.example.cv_bot_template.utils.DiscordUtils
@@ -90,13 +92,20 @@ class Game(private val myContext: Context) {
 			printToLog("\n[INFO] I am starting here!")
 		}
 
+		wait(0.5)
+
 		printToLog("\n[INFO] I am ending here!")
 
 		val endTime: Long = System.currentTimeMillis()
 		val runTime: Long = endTime - startTime
-		Log.d(tag, "Total Runtime: ${runTime}ms")
+		printToLog("Total Runtime: ${runTime}ms")
 
-		DiscordUtils.queue.add("Total Runtime: ${runTime}ms")
+		val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(myContext)
+		if (sharedPreferences.getBoolean("enableDiscordNotifications", false)) {
+			wait(1.0)
+			DiscordUtils.queue.add("Total Runtime: ${runTime}ms")
+			wait(1.0)
+		}
 
 		return true
 	}
