@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.preference.PreferenceManager
 import com.example.cv_bot_template.MainActivity.loggerTag
+import com.example.cv_bot_template.StartModule
 import com.example.cv_bot_template.data.ConfigData
 import com.example.cv_bot_template.utils.DiscordUtils
 import com.example.cv_bot_template.utils.ImageUtils
@@ -49,22 +50,29 @@ class Game(private val myContext: Context) {
 	 *
 	 * @param message Message to be saved.
 	 * @param tag Distinguish between messages for where they came from. Defaults to Game's tag.
+	 * @param isWarning Flag to determine whether to display log message in console as debug or warning.
 	 * @param isError Flag to determine whether to display log message in console as debug or error.
 	 */
-	fun printToLog(message: String, tag: String = this.tag, isError: Boolean = false) {
-		if (!isError) {
-			Log.d(tag, message)
-		} else {
+	fun printToLog(message: String, tag: String = this.tag, isWarning: Boolean = false, isError: Boolean = false) {
+		if (!isError && isWarning) {
+			Log.w(tag, message)
+		} else if (isError && !isWarning) {
 			Log.e(tag, message)
+		} else {
+			Log.d(tag, message)
 		}
 
 		// Remove the newline prefix if needed and place it where it should be.
-		if (message.startsWith("\n")) {
-			val newMessage = message.removePrefix("\n")
-			MessageLog.messageLog.add("\n" + printTime() + " " + newMessage)
+		val newMessage = if (message.startsWith("\n")) {
+			"\n" + printTime() + " " + message.removePrefix("\n")
 		} else {
-			MessageLog.messageLog.add(printTime() + " " + message)
+			printTime() + " " + message
 		}
+
+		MessageLog.messageLog.add(newMessage)
+
+		// Send the message to the frontend.
+		StartModule.sendEvent("MessageLog", newMessage)
 	}
 
 	/**
