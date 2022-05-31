@@ -416,6 +416,20 @@ class ImageUtils(context: Context, private val game: Game) {
 					break
 				}
 			} else {
+				val tempMatchLocation = if ((matchMethod == Imgproc.TM_SQDIFF || matchMethod == Imgproc.TM_SQDIFF_NORMED) && mmr.minVal <= (1.0 - setConfidence)) {
+					mmr.minLoc
+				} else {
+					mmr.maxLoc
+				}
+
+				// Draw a rectangle around the match on the source Mat. This will prevent false positives and infinite looping on subsequent matches.
+				Imgproc.rectangle(sourceMat, tempMatchLocation, Point(tempMatchLocation.x + templateMat.cols(), tempMatchLocation.y + templateMat.rows()), Scalar(0.0, 0.0, 0.0), 20)
+
+				if (debugMode) {
+					game.printToLog("[DEBUG] Match found with $maxVal >= $setConfidence at Point $matchLocation with scale: $newScale.", tag = tag)
+					Imgcodecs.imwrite("$matchFilePath/matchAll.png", sourceMat)
+				}
+
 				break
 			}
 		}
