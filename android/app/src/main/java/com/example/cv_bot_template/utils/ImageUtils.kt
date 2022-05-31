@@ -233,6 +233,13 @@ class ImageUtils(context: Context, private val game: Game) {
 	 * @return ArrayList of Point objects that represents the matches found on the source screenshot.
 	 */
 	private fun matchAll(sourceBitmap: Bitmap, templateBitmap: Bitmap, region: IntArray = intArrayOf(0, 0, 0, 0), customConfidence: Double = 0.0): ArrayList<Point> {
+		// If a custom region was specified, crop the source screenshot.
+		val srcBitmap = if (!region.contentEquals(intArrayOf(0, 0, 0, 0))) {
+			Bitmap.createBitmap(sourceBitmap, region[0], region[1], region[2], region[3])
+		} else {
+			sourceBitmap
+		}
+
 		// Scale images if the device is not 1080p which is supported by default.
 		val scales: MutableList<Double> = when {
 			customScale != 1.0 -> {
@@ -278,7 +285,7 @@ class ImageUtils(context: Context, private val game: Game) {
 			}
 
 			// Create the Mats of both source and template images.
-			Utils.bitmapToMat(sourceBitmap, sourceMat)
+			Utils.bitmapToMat(srcBitmap, sourceMat)
 			Utils.bitmapToMat(tmp, templateMat)
 
 			// Make the Mats grayscale for the source and the template.
@@ -314,8 +321,8 @@ class ImageUtils(context: Context, private val game: Game) {
 
 				// If a custom region was specified, readjust the coordinates to reflect the fullscreen source screenshot.
 				if (!region.contentEquals(intArrayOf(0, 0, 0, 0))) {
-					matchLocation.x = sourceBitmap.width - (sourceBitmap.width - (region[0] + matchLocation.x))
-					matchLocation.y = sourceBitmap.height - (sourceBitmap.height - (region[1] + matchLocation.y))
+					matchLocation.x = region[0] + matchLocation.x
+					matchLocation.y = region[1] + matchLocation.y
 				}
 
 				matchLocations.add(matchLocation)
@@ -332,8 +339,8 @@ class ImageUtils(context: Context, private val game: Game) {
 
 				// If a custom region was specified, readjust the coordinates to reflect the fullscreen source screenshot.
 				if (!region.contentEquals(intArrayOf(0, 0, 0, 0))) {
-					matchLocation.x = sourceBitmap.width - (sourceBitmap.width - (region[0] + matchLocation.x))
-					matchLocation.y = sourceBitmap.height - (sourceBitmap.height - (region[1] + matchLocation.y))
+					matchLocation.x = region[0] + matchLocation.x
+					matchLocation.y = region[1] + matchLocation.y
 				}
 
 				matchLocations.add(matchLocation)
@@ -367,8 +374,8 @@ class ImageUtils(context: Context, private val game: Game) {
 
 				// If a custom region was specified, readjust the coordinates to reflect the fullscreen source screenshot.
 				if (!region.contentEquals(intArrayOf(0, 0, 0, 0))) {
-					tempMatchLocation.x = sourceBitmap.width - (sourceBitmap.width - (region[0] + tempMatchLocation.x))
-					tempMatchLocation.y = sourceBitmap.height - (sourceBitmap.height - (region[1] + tempMatchLocation.y))
+					matchLocation.x = region[0] + matchLocation.x
+					matchLocation.y = region[1] + matchLocation.y
 				}
 
 				if (!matchLocations.contains(tempMatchLocation) && !matchLocations.contains(Point(tempMatchLocation.x + 1.0, tempMatchLocation.y)) &&
@@ -396,8 +403,8 @@ class ImageUtils(context: Context, private val game: Game) {
 
 				// If a custom region was specified, readjust the coordinates to reflect the fullscreen source screenshot.
 				if (!region.contentEquals(intArrayOf(0, 0, 0, 0))) {
-					tempMatchLocation.x = sourceBitmap.width - (sourceBitmap.width - (region[0] + tempMatchLocation.x))
-					tempMatchLocation.y = sourceBitmap.height - (sourceBitmap.height - (region[1] + tempMatchLocation.y))
+					matchLocation.x = region[0] + matchLocation.x
+					matchLocation.y = region[1] + matchLocation.y
 				}
 
 				if (!matchLocations.contains(tempMatchLocation) && !matchLocations.contains(Point(tempMatchLocation.x + 1.0, tempMatchLocation.y)) &&
