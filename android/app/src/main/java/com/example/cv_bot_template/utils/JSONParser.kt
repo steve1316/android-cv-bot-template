@@ -49,6 +49,20 @@ class JSONParser {
 				commit()
 			}
 		} catch(e: Exception) {}
+
+		try {
+			val androidObj = jObj.getJSONObject("android")
+			sharedPreferences.edit {
+				putBoolean("enableDelayTap", androidObj.getBoolean("enableDelayTap"))
+				putInt("delayTapMilliseconds", androidObj.getInt("delayTapMilliseconds"))
+				putFloat("confidence", androidObj.getDouble("confidence").toFloat())
+				putFloat("confidenceAll", androidObj.getDouble("confidenceAll").toFloat())
+				putFloat("customScale", androidObj.getDouble("customScale").toFloat())
+				putBoolean("enableTestForHomeScreen", androidObj.getBoolean("enableTestForHomeScreen"))
+				commit()
+			}
+		} catch (e: Exception) {
+		}
 	}
 
 	/**
