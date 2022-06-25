@@ -10,6 +10,7 @@ import com.example.cv_bot_template.data.ConfigData
 import com.example.cv_bot_template.utils.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import org.opencv.core.Point
 import java.util.concurrent.TimeUnit
 
 /**
@@ -80,6 +81,35 @@ class Game(private val myContext: Context) {
 	fun wait(seconds: Double) {
 		runBlocking {
 			delay((seconds * 1000).toLong())
+		}
+	}
+
+	/**
+	 * Finds and presses the image's location.
+	 *
+	 * @param imageName Name of the button image file.
+	 * @param tries Number of tries to find the specified image. Defaults to 0 which will use ImageUtil's default.
+	 * @param suppressError Whether or not to suppress saving error messages to the log in failing to find the image.
+	 * @return True if the image was found and clicked. False otherwise.
+	 */
+	fun findAndPress(imageName: String, tries: Int = 0, suppressError: Boolean = false): Boolean {
+		if (configData.debugMode) {
+			printToLog("[DEBUG] Now attempting to find and click the \"$imageName\" button.")
+		}
+
+		val tempLocation: Point? = imageUtils.findImage(imageName, tries = tries, suppressError = suppressError)
+		return if (tempLocation != null) {
+			if (configData.enableDelayTap) {
+				val newDelay: Double = ((configData.delayTapMilliseconds - 100)..(configData.delayTapMilliseconds + 100)).random().toDouble() / 1000
+				if (configData.debugMode) printToLog("[DEBUG] Adding an additional delay of ${newDelay}s...")
+				wait(newDelay)
+			}
+
+			gestureUtils.tap(tempLocation.x, tempLocation.y, imageName)
+			wait(1.0)
+			true
+		} else {
+			false
 		}
 	}
 
