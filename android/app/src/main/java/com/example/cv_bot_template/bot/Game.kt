@@ -7,10 +7,7 @@ import androidx.preference.PreferenceManager
 import com.example.cv_bot_template.MainActivity.loggerTag
 import com.example.cv_bot_template.StartModule
 import com.example.cv_bot_template.data.ConfigData
-import com.example.cv_bot_template.utils.DiscordUtils
-import com.example.cv_bot_template.utils.ImageUtils
-import com.example.cv_bot_template.utils.MessageLog
-import com.example.cv_bot_template.utils.MyAccessibilityService
+import com.example.cv_bot_template.utils.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
@@ -87,6 +84,19 @@ class Game(private val myContext: Context) {
 	}
 
 	/**
+	 * Check rotation of the Virtual Display and if it is stuck in Portrait Mode, destroy and remake it.
+	 *
+	 */
+	private fun landscapeCheck() {
+		if (MediaProjectionService.displayHeight > MediaProjectionService.displayWidth) {
+			Log.d(tag, "Virtual Display is not correct. Recreating it now...")
+			MediaProjectionService.forceGenerateVirtualDisplay(myContext)
+		} else {
+			Log.d(tag, "Skipping recreation of Virtual Display as it is correct.")
+		}
+	}
+
+	/**
 	 * Bot will begin automation here.
 	 *
 	 * @return True if all automation goals have been met. False otherwise.
@@ -99,6 +109,8 @@ class Game(private val myContext: Context) {
 		} else {
 			printToLog("\n[INFO] I am starting here!")
 		}
+
+		landscapeCheck()
 
 		wait(0.5)
 

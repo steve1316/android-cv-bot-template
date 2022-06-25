@@ -39,11 +39,11 @@ import java.util.*
  * added to suit this application's purposes.
  */
 class MediaProjectionService : Service() {
-	private val tag: String = "${loggerTag}MediaProjectionService"
-
 	private lateinit var myContext: Context
 
 	companion object {
+		private const val tag: String = "${loggerTag}MediaProjectionService"
+
 		private var mediaProjection: MediaProjection? = null
 		private var orientationChangeCallback: OrientationEventListener? = null
 		private lateinit var tempDirectory: String
@@ -59,6 +59,52 @@ class MediaProjectionService : Service() {
 		private var oldRotation: Int = 0
 		private lateinit var imageReader: ImageReader
 		var isRunning: Boolean = false
+
+		/**
+		 * Forcibly regenerate the Virtual Display. Useful when the Virtual Display is stuck in Portrait Mode when the device already rotated to Landscape and vice-versa.
+		 *
+		 * @param context The application's context.
+		 */
+		fun forceGenerateVirtualDisplay(context: Context) {
+			try {
+				// Perform cleanup.
+				virtualDisplay.release()
+
+				// Now re-create the VirtualDisplay based on the new width and height of the rotated screen.
+				createVirtualDisplay()
+			} catch (e: Exception) {
+				Log.e(tag, "Failed to perform cleanup and recreating the VirtualDisplay after device rotation.")
+				Toast.makeText(
+					context, "Failed to perform cleanup and recreating the VirtualDisplay after device rotation.",
+					Toast.LENGTH_SHORT
+				).show()
+			}
+		}
+
+		/**
+		 * Creates the VirtualDisplay and the ImageReader to start reading in screenshots.
+		 */
+		@SuppressLint("WrongConstant")
+		private fun createVirtualDisplay() {
+			// Get the full width and height of the device screen such that making a screenshot would not scale it down and creating black bars that
+			// would offset the screen coordinates of matches by the difference.
+			val metrics = DisplayMetrics()
+			defaultDisplay.getRealMetrics(metrics)
+			displayWidth = metrics.widthPixels
+			displayHeight = metrics.heightPixels
+			displayDPI = metrics.densityDpi
+
+			Log.d(tag, "Screen Width: $displayWidth, Screen Height: $displayHeight, Screen DPI: $displayDPI")
+
+			// Start the ImageReader.
+			imageReader = ImageReader.newInstance(displayWidth, displayHeight, PixelFormat.RGBA_8888, 2)
+
+			// Now create the VirtualDisplay.
+			virtualDisplay = mediaProjection?.createVirtualDisplay(
+				"Bot Virtual Display", displayWidth, displayHeight,
+				displayDPI, getVirtualDisplayFlags(), imageReader.surface, null, threadHandler
+			)!!
+		}
 
 		/**
 		 * Tell the ImageReader to grab the latest acquired screenshot and process it into a Bitmap.
@@ -343,30 +389,5 @@ class MediaProjectionService : Service() {
 		threadHandler.post {
 			mediaProjection?.stop()
 		}
-	}
-
-	/**
-	 * Creates the VirtualDisplay and the ImageReader to start reading in screenshots.
-	 */
-	@SuppressLint("WrongConstant")
-	private fun createVirtualDisplay() {
-		// Get the full width and height of the device screen such that making a screenshot would not scale it down and creating black bars that
-		// would offset the screen coordinates of matches by the difference.
-		val metrics = DisplayMetrics()
-		defaultDisplay.getRealMetrics(metrics)
-		displayWidth = metrics.widthPixels
-		displayHeight = metrics.heightPixels
-		displayDPI = metrics.densityDpi
-
-		Log.d(tag, "Screen Width: $displayWidth, Screen Height: $displayHeight, Screen DPI: $displayDPI")
-
-		// Start the ImageReader.
-		imageReader = ImageReader.newInstance(displayWidth, displayHeight, PixelFormat.RGBA_8888, 2)
-
-		// Now create the VirtualDisplay.
-		virtualDisplay = mediaProjection?.createVirtualDisplay(
-			"Bot Virtual Display", displayWidth, displayHeight,
-			displayDPI, getVirtualDisplayFlags(), imageReader.surface, null, threadHandler
-		)!!
 	}
 }
