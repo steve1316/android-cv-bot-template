@@ -212,8 +212,8 @@ class ImageUtils(context: Context, private val game: Game) {
 
 				// If a custom region was specified, readjust the coordinates to reflect the fullscreen source screenshot.
 				if (!region.contentEquals(intArrayOf(0, 0, 0, 0))) {
-					matchLocation.x = sourceBitmap.width - (region[0] + matchLocation.x)
-					matchLocation.y = sourceBitmap.height - (region[1] + matchLocation.y)
+					matchLocation.x = region[0] + matchLocation.x
+					matchLocation.y = region[1] + matchLocation.y
 				}
 
 				return true
