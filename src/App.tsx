@@ -8,6 +8,7 @@ import { BotStateProvider } from "./context/BotStateContext"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { MessageLogProvider } from "./context/MessageLogContext"
 import { NavigationContainer } from "@react-navigation/native"
+import ExtraSettings from "./pages/ExtraSettings"
 
 const Tab = createBottomTabNavigator()
 
@@ -25,6 +26,8 @@ function App() {
                                     iconName = focused ? "home" : "home-outline"
                                 } else if (route.name === "Settings") {
                                     iconName = focused ? "settings" : "settings-outline"
+                                } else if (route.name === "Extra Settings") {
+                                    iconName = focused ? "cog" : "cog-outline"
                                 }
 
                                 return <Ionicons name={iconName} size={size} color={color} />
@@ -35,6 +38,7 @@ function App() {
                     >
                         <Tab.Screen name="Home" component={Home} />
                         <Tab.Screen name="Settings" component={Settings} />
+                        <Tab.Screen name="Extra Settings" component={ExtraSettings} />
                     </Tab.Navigator>
                 </NavigationContainer>
             </MessageLogProvider>

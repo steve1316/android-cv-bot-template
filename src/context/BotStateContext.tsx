@@ -8,6 +8,15 @@ export interface Settings {
         discordToken: string
         discordUserID: string
     }
+
+    android: {
+        enableDelayTap: boolean
+        delayTapMilliseconds: number
+        confidence: number
+        confidenceAll: number
+        customScale: number
+        enableTestForHomeScreen: boolean
+    }
 }
 
 // Set the default settings.
@@ -17,6 +26,14 @@ export const defaultSettings: Settings = {
         enableDiscordNotifications: false,
         discordToken: "",
         discordUserID: "",
+    },
+    android: {
+        enableDelayTap: false,
+        delayTapMilliseconds: 1000,
+        confidence: 80,
+        confidenceAll: 80,
+        customScale: 1.0,
+        enableTestForHomeScreen: false,
     },
 }
 
