@@ -95,7 +95,7 @@ class ImageUtils(context: Context, private val game: Game) {
 	 * @param sourceBitmap Bitmap from the /files/temp/ folder.
 	 * @param templateBitmap Bitmap from the assets folder.
 	 * @param region Specify the region consisting of (x, y, width, height) of the source screenshot to template match. Defaults to (0, 0, 0, 0) which is equivalent to searching the full image.
-	 * @param customConfidence Specify a custom confidence. Defaults to the confidence set in the app's settings.
+	 * @param customConfidence Specify a custom confidence. Defaults to 0.0 which will use the confidence set in the app's settings.
 	 * @return True if a match was found. False otherwise.
 	 */
 	private fun match(sourceBitmap: Bitmap, templateBitmap: Bitmap, region: IntArray = intArrayOf(0, 0, 0, 0), useSingleScale: Boolean = false, customConfidence: Double = 0.0): Boolean {
@@ -229,7 +229,7 @@ class ImageUtils(context: Context, private val game: Game) {
 	 * @param sourceBitmap Bitmap from the /files/temp/ folder.
 	 * @param templateBitmap Bitmap from the assets folder.
 	 * @param region Specify the region consisting of (x, y, width, height) of the source screenshot to template match. Defaults to (0, 0, 0, 0) which is equivalent to searching the full image.
-	 * @param customConfidence Specify a custom confidence. Defaults to the confidence set in the app's settings.
+	 * @param customConfidence Specify a custom confidence. Defaults to 0.0 which will use the confidence set in the app's settings.
 	 * @return ArrayList of Point objects that represents the matches found on the source screenshot.
 	 */
 	private fun matchAll(sourceBitmap: Bitmap, templateBitmap: Bitmap, region: IntArray = intArrayOf(0, 0, 0, 0), customConfidence: Double = 0.0): ArrayList<Point> {
@@ -548,12 +548,13 @@ class ImageUtils(context: Context, private val game: Game) {
 	 *
 	 * @param templateName File name of the template image.
 	 * @param tries Number of tries before failing. Defaults to 5.
+	 * @param confidence Custom confidence for template matching. Defaults to 0.0 which will use the confidence set in the app's settings.
 	 * @param region Specify the region consisting of (x, y, width, height) of the source screenshot to template match. Defaults to (0, 0, 0, 0) which is equivalent to searching the full image.
 	 * @param suppressError Whether or not to suppress saving error messages to the log. Defaults to false.
 	 * @param testMode Flag to test and get a valid scale for device compatibility.
 	 * @return Point object containing the location of the match or null if not found.
 	 */
-	fun findImage(templateName: String, tries: Int = 5, region: IntArray = intArrayOf(0, 0, 0, 0), suppressError: Boolean = false, testMode: Boolean = false): Point? {
+	fun findImage(templateName: String, tries: Int = 5, confidence: Double = 0.0, region: IntArray = intArrayOf(0, 0, 0, 0), suppressError: Boolean = false, testMode: Boolean = false): Point? {
 		val folderName = "images"
 		var numberOfTries = tries
 
@@ -571,7 +572,7 @@ class ImageUtils(context: Context, private val game: Game) {
 			val (sourceBitmap, templateBitmap) = getBitmaps(templateName, folderName)
 
 			if (sourceBitmap != null && templateBitmap != null) {
-				val resultFlag: Boolean = match(sourceBitmap, templateBitmap, region, useSingleScale = true)
+				val resultFlag: Boolean = match(sourceBitmap, templateBitmap, region, useSingleScale = true, customConfidence = confidence)
 				if (!resultFlag) {
 					if (testMode) {
 						// Increment scale by 0.01 until a match is found if Test Mode is enabled.
@@ -623,11 +624,12 @@ class ImageUtils(context: Context, private val game: Game) {
 	 *
 	 * @param templateName File name of the template image.
 	 * @param tries Number of tries before failing. Defaults to 5.
+	 * @param confidence Custom confidence for template matching. Defaults to 0.0 which will use the confidence set in the app's settings.
 	 * @param region Specify the region consisting of (x, y, width, height) of the source screenshot to template match. Defaults to (0, 0, 0, 0) which is equivalent to searching the full image.
 	 * @param suppressError Whether or not to suppress saving error messages to the log.
 	 * @return True if the current location is at the specified location. False otherwise.
 	 */
-	fun confirmLocation(templateName: String, tries: Int = 5, region: IntArray = intArrayOf(0, 0, 0, 0), suppressError: Boolean = false): Boolean {
+	fun confirmLocation(templateName: String, tries: Int = 5, confidence: Double = 0.0, region: IntArray = intArrayOf(0, 0, 0, 0), suppressError: Boolean = false): Boolean {
 		val folderName = "locations"
 		var numberOfTries = tries
 
@@ -639,7 +641,7 @@ class ImageUtils(context: Context, private val game: Game) {
 			val (sourceBitmap, templateBitmap) = getBitmaps(templateName, folderName)
 
 			if (sourceBitmap != null && templateBitmap != null) {
-				val resultFlag: Boolean = match(sourceBitmap, templateBitmap, region)
+				val resultFlag: Boolean = match(sourceBitmap, templateBitmap, region, customConfidence = confidence)
 				if (!resultFlag) {
 					numberOfTries -= 1
 					if (numberOfTries <= 0) {
@@ -668,10 +670,10 @@ class ImageUtils(context: Context, private val game: Game) {
 	 *
 	 * @param templateName File name of the template image.
 	 * @param region Specify the region consisting of (x, y, width, height) of the source screenshot to template match. Defaults to (0, 0, 0, 0) which is equivalent to searching the full image.
-	 * @param customConfidence Accuracy threshold for matching. Defaults to 0.8.
+	 * @param customConfidence Accuracy threshold for matching. Defaults to 0.0 which will use the confidence set in the app's settings.
 	 * @return An ArrayList of Point objects containing all the occurrences of the specified image or null if not found.
 	 */
-	fun findAll(templateName: String, folderName: String, region: IntArray = intArrayOf(0, 0, 0, 0), customConfidence: Double = 0.8): ArrayList<Point> {
+	fun findAll(templateName: String, folderName: String, region: IntArray = intArrayOf(0, 0, 0, 0), customConfidence: Double = 0.0): ArrayList<Point> {
 		if (debugMode) {
 			game.printToLog("\n[DEBUG] Starting process to find all ${templateName.uppercase()} images...", tag = tag)
 		}
