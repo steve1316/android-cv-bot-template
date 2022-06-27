@@ -4,7 +4,12 @@
 
 > You can visit my Android bot of Granblue Fantasy for more usage details and examples of how to use this framework: https://github.com/steve1316/granblue-automation-android
 
-> Some additional usage examples at [Uma Android Training Helper](https://github.com/steve1316/uma-android-training-helper) and [Uma Android Automation](https://github.com/steve1316/uma-android-automation)
+### Some additional usage examples at:
+
+-   [Uma Android Training Helper](https://github.com/steve1316/uma-android-training-helper)
+-   [Uma Android Automation](https://github.com/steve1316/uma-android-automation)
+-   [Master Duel Decklist Importer](https://github.com/steve1316/masterduel-android-decklist-importer)
+-   [Girls' Frontline Android Auto](https://github.com/steve1316/gfl-android-auto)
 
 This template project serves as a starter point for Android botting or as a general framework that relies on Computer Vision template matching via OpenCV and executing gestures like tapping and scrolling to accomplish a automation goal. It uses MediaProjection Service to programmatically take screenshots and the Accessibility Service to execute gestures. The framework is well annotated with documentation to serve as explanations and usage hints.
 
@@ -40,8 +45,8 @@ https://user-images.githubusercontent.com/18709555/118407909-c933be00-b637-11eb-
 5. You can now build and run on your Android Device or create your own .apk file.
 6. `Clean Project` and then `Rebuild Project` under the Build menu.
 7. After building is complete, you can test the capability of this framework in the Android Studio's emulator.
-8. After you familiarized yourself with what the framework can do, you can refactor the application's package name in various parts of the project and in `settings.gradle`.
-9. If you want your application automatically check for the latest updates from your GitHub repo using `AppUpdater`, do the following:
+8. After you familiarized yourself with what the framework can do, you can refactor the application's package name in various parts of the project and in `settings.gradle`. Also adjust the app name in `app.json` and in `strings.xml`.
+9. If you want your application automatically check for the latest updates from your GitHub repo using `AppUpdater`, you can either reuse the already provided `app/update.xml` in the template or do the following:
     1. Upload a .xml file to your Github repo using the provided example `app/update.xml` with your updated version number, release notes, and link to the `Releases` page of your GitHub repo.
     2. Update the `setUpdateXML()` with the `RAW` link to your new update.xml.
     3. Now when a user has a lower version number compared to the latest version in your `Releases` page in your GitHub repo, they will be prompted with a dialog window like this:
@@ -82,6 +87,10 @@ https://user-images.githubusercontent.com/18709555/118407909-c933be00-b637-11eb-
     -   Supported gestures are: tap, swipe, and scroll via AccessibilityAction.
 -   Note: If you encounter this Exception: `kotlin.UninitializedPropertyAccessException: lateinit property instance has not been initialized`, it means that you must have terminated the application via Android Studio. This causes the Accessibility Service to bug out. This does not happen in regular use without interference from Android Studio. To fix this, you can toggle on/off the Accessibility Service until the Toast message pops back up signalling that the Service is now running properly again.
 
+## JSONParser
+
+-   Reads in data and settings from a .json file which you can then choose to store however you like, whether it be stored in a static object or put into the SharedPreferences.
+
 ## NotificationUtils
 
 -   Allows the bot process to create and update Notifications to notify users of the status of the bot and whether or not the bot encounters an Exception.
@@ -93,4 +102,9 @@ https://user-images.githubusercontent.com/18709555/118407909-c933be00-b637-11eb-
 2. [AccessibilityService - Used to dispatch gestures like tapping and scrolling](https://developer.android.com/reference/android/accessibilityservice/AccessibilityService)
 3. [OpenCV Android 4.5.1 - Used to template match](https://opencv.org/releases/)
 4. [Tesseract4Android 2.1.1 - For performing OCR on the screen](https://github.com/adaptech-cz/Tesseract4Android)
-5. [AppUpdater 2.7 - For automatically checking and notifying the user for new app updates](https://github.com/javiersantos/AppUpdater)
+5. [Google's Firebase Machine Learning OCR for Text Detection](https://developers.google.com/ml-kit)
+6. [AppUpdater 2.7 - For automatically checking and notifying the user for new app updates](https://github.com/javiersantos/AppUpdater)
+7. [Javacord 3.3.2 - For Discord integration](https://github.com/Javacord/Javacord)
+8. [Twitter4j - For Twitter integration](https://github.com/Twitter4J/Twitter4J)
+9. [Klaxon 5.5 - For parsing JSON files](https://github.com/cbeust/klaxon)
+10. [React Native 0.64.3 - Used to display the UI and manage bot settings](https://reactnative.dev/)
