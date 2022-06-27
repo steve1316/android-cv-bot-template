@@ -49,7 +49,13 @@ const Settings = () => {
     const renderDiscordSettings = () => {
         return (
             <View>
-                <TitleDivider title="Discord Settings" subtitle="Sample description 2" hasIcon={true} iconName="discord" iconColor="#7289d9" />
+                <TitleDivider
+                    title="Discord Settings"
+                    subtitle="Please visit the wiki on the GitHub page for instructions on how to get the token and user ID."
+                    hasIcon={true}
+                    iconName="discord"
+                    iconColor="#7289d9"
+                />
 
                 <CustomCheckbox
                     isChecked={bsc.settings.discord.enableDiscordNotifications}
