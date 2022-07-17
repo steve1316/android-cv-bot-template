@@ -82,4 +82,22 @@ class JSONParser {
 
 		return newArrayList
 	}
+
+	/**
+	 * Convert JSONArray to ArrayList<Int> object.
+	 *
+	 * @param jsonArray The JSONArray object to be converted.
+	 * @return The converted ArrayList<Int> object.
+	 */
+	private fun toIntArrayList(jsonArray: JSONArray): ArrayList<Int> {
+		val newArrayList: ArrayList<Int> = arrayListOf()
+
+		var i = 0
+		while (i < jsonArray.length()) {
+			newArrayList.add(jsonArray.get(i) as Int)
+			i++
+		}
+
+		return newArrayList
+	}
 }
