@@ -10,7 +10,6 @@ import org.javacord.api.DiscordApi
 import org.javacord.api.DiscordApiBuilder
 import org.javacord.api.entity.channel.PrivateChannel
 import org.javacord.api.entity.user.User
-import org.javacord.api.entity.user.UserStatus
 import java.util.*
 
 
@@ -28,36 +27,47 @@ class DiscordUtils(myContext: Context) {
 	companion object {
 		val queue: Queue<String> = LinkedList()
 		lateinit var client: DiscordApi
-		lateinit var privateChannel: PrivateChannel
-
-		fun disconnectClient() {
-			if (this::client.isInitialized && client.status == UserStatus.ONLINE) {
-				client.disconnect()
-			}
-		}
+		var privateChannel: PrivateChannel? = null
 	}
 
 	private fun sendMessage(message: String) {
-		privateChannel.sendMessage(message).join()
+		privateChannel?.sendMessage(message)?.join()
 	}
 
 	fun main() {
+		Log.d(tag, "Starting Discord process now...")
+
 		try {
-			Log.d(tag, "Starting Discord process now...")
-
 			client = DiscordApiBuilder().setToken(discordToken).login().join()
-			val user: User = client.getUserById(discordUserID).join()
+		} catch (e: Exception) {
+			Log.d(tag, "[DISCORD] Failed to connect to Discord API using provided token.")
+			return
+		}
+
+		val user: User
+		try {
+			user = client.getUserById(discordUserID).join()
+		} catch (e: Exception) {
+			Log.d(tag, "[DISCORD] Failed to find user using provided user ID.")
+			return
+		}
+
+		try {
 			privateChannel = user.openPrivateChannel().join()
+		} catch (e: Exception) {
+			Log.d(tag, "[DISCORD] Failed to open private channel with user.")
+			return
+		}
 
-			Log.d(tag, "Successfully fetched reference to user and their private channel.")
+		Log.d(tag, "Successfully fetched reference to user and their private channel.")
 
-			queue.add("```diff\n+ Successful mobile connection to Discord API for $appName\n```")
+		queue.add("```diff\n+ Successful mobile connection to Discord API for $appName\n```")
 
+		try {
 			// Loop and send any messages inside the Queue.
 			while (true) {
 				if (queue.isNotEmpty()) {
 					val message = queue.remove()
-					Log.d(tag, "Sending the following message to Discord DM: $message")
 					sendMessage(message)
 
 					if (message.contains("Terminated connection to Discord API")) {
@@ -67,10 +77,8 @@ class DiscordUtils(myContext: Context) {
 			}
 
 			Log.d(tag, "Terminated connection to Discord API.")
-			disconnectClient()
 		} catch (e: Exception) {
-			Log.e(tag, "Failed to initialize JDA client: ${e.stackTraceToString()}")
-			disconnectClient()
+			Log.e(tag, e.stackTraceToString())
 		}
 	}
 }
