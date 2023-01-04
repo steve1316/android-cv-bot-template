@@ -44,6 +44,20 @@ const ExtraSettings = () => {
 
     const bsc = useContext(BotStateContext)
 
+    const { StartModule } = NativeModules
+
+    //////////////////////////////////////////////////
+    //////////////////////////////////////////////////
+    // Callbacks
+
+    useEffect(() => {
+        if (showSnackbar) {
+            setTimeout(() => {
+                setShowSnackbar(false)
+            }, 10000)
+        }
+    }, [showSnackbar])
+
     //////////////////////////////////////////////////
     //////////////////////////////////////////////////
     // Rendering
@@ -87,6 +101,7 @@ const ExtraSettings = () => {
                     value={bsc.settings.twitter.twitterAccessTokenSecret}
                     onChangeText={(value: string) => bsc.setSettings({ ...bsc.settings, twitter: { ...bsc.settings.twitter, twitterAccessTokenSecret: value } })}
                 />
+                <LoadingButton title="Test Twitter API v1.1" loadingTitle="In progress..." isLoading={testInProgress} onPress={() => testTwitter()} />
             </View>
         )
     }
@@ -123,6 +138,7 @@ const ExtraSettings = () => {
                             value={bsc.settings.discord.discordUserID}
                             onChangeText={(value: string) => bsc.setSettings({ ...bsc.settings, discord: { ...bsc.settings.discord, discordUserID: value } })}
                         />
+                        <LoadingButton title="Test Discord API" loadingTitle="In progress..." isLoading={testInProgress} onPress={() => testDiscord()} />
                     </View>
                 ) : null}
             </View>
@@ -214,6 +230,44 @@ const ExtraSettings = () => {
                 ) : null}
             </View>
         )
+    }
+
+    const testTwitter = () => {
+        // Add listener to work around the UI freezing issue associated with Javacord blocking the thread.
+        DeviceEventEmitter.addListener("testTwitter", (data) => {
+            let result: string = data["message"]
+            if (result !== "Test successfully completed.") {
+                setTestFailed(true)
+                setTestErrorMessage(result)
+            } else {
+                setTestFailed(false)
+            }
+
+            setTestInProgress(false)
+            setShowSnackbar(true)
+        })
+
+        setTestInProgress(true)
+        StartModule.startTwitterTest()
+    }
+
+    const testDiscord = () => {
+        // Add listener to work around the UI freezing issue associated with Javacord blocking the thread.
+        DeviceEventEmitter.addListener("testDiscord", (data) => {
+            let result: string = data["message"]
+            if (result !== "Test successfully completed.") {
+                setTestFailed(true)
+                setTestErrorMessage(result)
+            } else {
+                setTestFailed(false)
+            }
+
+            setTestInProgress(false)
+            setShowSnackbar(true)
+        })
+
+        setTestInProgress(true)
+        StartModule.startDiscordTest()
     }
 
     return (
