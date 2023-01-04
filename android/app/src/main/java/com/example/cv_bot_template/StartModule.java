@@ -13,8 +13,11 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.cv_bot_template.bot.Game;
+import com.example.cv_bot_template.utils.JSONParser;
 import com.example.cv_bot_template.utils.MediaProjectionService;
 import com.example.cv_bot_template.utils.MyAccessibilityService;
+import com.example.cv_bot_template.utils.TwitterUtils;
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -23,17 +26,27 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
+import org.javacord.api.DiscordApi;
+import org.javacord.api.DiscordApiBuilder;
+import org.javacord.api.entity.channel.PrivateChannel;
+import org.javacord.api.entity.user.User;
+import org.javacord.api.entity.user.UserStatus;
+
+import java.util.LinkedList;
 import java.util.Objects;
+import java.util.Queue;
 
 public class StartModule extends ReactContextBaseJavaModule implements ActivityEventListener {
     private final String tag = loggerTag + "StartModule";
     private static ReactApplicationContext reactContext;
+    private final Context context;
     private static DeviceEventManagerModule.RCTDeviceEventEmitter emitter = null;
 
     public StartModule(ReactApplicationContext reactContext) {
         super(reactContext); //required by React Native
         StartModule.reactContext = reactContext;
         StartModule.reactContext.addActivityEventListener(this);
+        context = reactContext.getApplicationContext();
     }
 
     @ReactMethod
@@ -41,6 +54,104 @@ public class StartModule extends ReactContextBaseJavaModule implements ActivityE
         if (readyCheck()) {
             startProjection();
         }
+    }
+
+    @ReactMethod()
+    public void startTwitterTest() {
+        new Thread(() -> {
+            // Initialize settings.
+            JSONParser parser = new JSONParser();
+            parser.initializeSettings(context);
+            Game game = new Game(context);
+            TwitterUtils twitter = new TwitterUtils(game, true);
+            sendEvent("testTwitter", twitter.testConnection());
+        }).start();
+    }
+
+    @ReactMethod()
+    public void startDiscordTest() {
+        class DiscordRunner {
+            DiscordApi api = null;
+            User user = null;
+            PrivateChannel privateChannel = null;
+
+            public void disconnect() {
+                if (api != null && api.getStatus() == UserStatus.ONLINE) {
+                    api.disconnect();
+                }
+            }
+
+            public void sendMessage(String message) {
+                if (privateChannel != null) {
+                    privateChannel.sendMessage(message).join();
+                }
+            }
+
+            public void main() {
+                JSONParser parser = new JSONParser();
+                parser.initializeSettings(context);
+                Game game = new Game(context);
+                Queue<String> queue = new LinkedList<>();
+                String appName = context.getString(R.string.app_name);
+
+                Log.d(tag, "Starting Discord test now...");
+
+                try {
+                    api = new DiscordApiBuilder().setToken(game.getConfigData().getDiscordToken()).login().join();
+                } catch (Exception e) {
+                    sendEvent("testDiscord", "[DISCORD] Failed to connect to Discord API using provided token.");
+                    return;
+                }
+
+                try {
+                    user = api.getUserById(game.getConfigData().getDiscordUserID()).join();
+                } catch (Exception e) {
+                    sendEvent("testDiscord", "[DISCORD] Failed to find user using provided user ID.");
+                    return;
+                }
+
+                try {
+                    privateChannel = user.openPrivateChannel().join();
+                } catch (Exception e) {
+                    sendEvent("testDiscord", "[DISCORD] Failed to open private channel with user.");
+                    return;
+                }
+
+                Log.d(tag, "Successfully fetched reference to user and their private channel.");
+
+                queue.add("```diff\n+ Successful connection to Discord API for " + appName + "\n```");
+                queue.add("Testing 1 2 3");
+                queue.add("```diff\n- Terminated connection to Discord API for " + appName + "\n```");
+
+                try {
+                    // Loop and send any messages inside the Queue.
+                    while (true) {
+                        if (!queue.isEmpty()) {
+                            String message = queue.remove();
+                            sendMessage(message);
+
+                            if (message.contains("Terminated connection to Discord API")) {
+                                break;
+                            }
+                        }
+                    }
+
+                    Log.d(tag, "Terminated connection to Discord API.");
+                } catch (Exception e) {
+                    Log.e(tag, e.getMessage());
+                    sendEvent("testDiscord", e.getMessage());
+                    return;
+                }
+
+                sendEvent("testDiscord", "Test successfully completed.");
+            }
+        }
+
+        new Thread(() -> {
+            DiscordRunner discord = new DiscordRunner();
+            discord.main();
+            discord.disconnect();
+        }).start();
     }
 
     public static void sendEvent(String eventName, String message) {
