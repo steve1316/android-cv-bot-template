@@ -2,9 +2,18 @@ import Ionicons from "react-native-vector-icons/Ionicons"
 import React, { useContext, useEffect, useState } from "react"
 import SnackBar from "rn-snackbar-component"
 import { BotStateContext } from "../../context/BotStateContext"
-import { ScrollView, StyleSheet, View } from "react-native"
+import { ScrollView, StyleSheet, View, LogBox } from "react-native"
+import ignoreWarnings from "ignore-warnings"
 import CustomCheckbox from "../../components/CustomCheckbox"
 import TitleDivider from "../../components/TitleDivider"
+
+// Ignores the warning from the newer version of React Native as per https://github.com/facebook/react-native/issues/33557.
+ignoreWarnings("warn", ["ViewPropTypes", "[react-native-gesture-handler]"])
+LogBox.ignoreLogs([
+    "ViewPropTypes will be removed from React Native. Migrate to ViewPropTypes exported from 'deprecated-react-native-prop-types'.",
+    "NativeBase: The contrast ratio of",
+    "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",
+])
 
 const styles = StyleSheet.create({
     root: {
@@ -19,6 +28,10 @@ const Settings = () => {
     const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false)
 
     const bsc = useContext(BotStateContext)
+
+    //////////////////////////////////////////////////
+    //////////////////////////////////////////////////
+    // Callbacks
 
     useEffect(() => {
         // Manually set this flag to false as the snackbar autohiding does not set this to false automatically.

@@ -1,5 +1,5 @@
 import React, { FC } from "react"
-import { ActivityIndicator, Alert, GestureResponderEvent, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { Text, StyleSheet, View, ActivityIndicator, TouchableOpacity, GestureResponderEvent, Alert } from "react-native"
 
 interface Props {
     title: string
@@ -8,7 +8,7 @@ interface Props {
     onPress?: (event: GestureResponderEvent) => void
 }
 
-const LoadingButton = ({ title, loadingTitle, isLoading, onPress = () => Alert.alert("Pressed!") }: Props) => {
+const LoadingButton: FC<Props> = ({ title, loadingTitle, isLoading, onPress = () => Alert.alert("Pressed!") }) => {
     const styles = StyleSheet.create({
         button: {
             display: "flex",
