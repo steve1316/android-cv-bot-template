@@ -6,8 +6,6 @@ import { BotStateContext } from "../../context/BotStateContext"
 import { Dimensions, ScrollView, StyleSheet, View } from "react-native"
 import { Text } from "react-native-elements"
 import { Slider } from "@sharcoux/slider"
-import SnackBar from "rn-snackbar-component"
-import MIcon from "react-native-vector-icons/MaterialCommunityIcons"
 
 const styles = StyleSheet.create({
     root: {
@@ -35,7 +33,6 @@ const styles = StyleSheet.create({
 })
 
 const ExtraSettings = () => {
-    const [modalOpen, setModalOpen] = useState<boolean>(false)
     const [showSnackbar, setShowSnackbar] = useState<boolean>(false)
     const [testInProgress, setTestInProgress] = useState<boolean>(false)
     const [testFailed, setTestFailed] = useState<boolean>(false)
@@ -46,6 +43,44 @@ const ExtraSettings = () => {
     //////////////////////////////////////////////////
     //////////////////////////////////////////////////
     // Rendering
+
+    const renderDiscordSettings = () => {
+        return (
+            <View>
+                <TitleDivider
+                    title="Discord Settings"
+                    subtitle={`Please visit the wiki on the GitHub page for instructions on how to get the token and user ID.`}
+                    hasIcon={true}
+                    iconName="discord"
+                    iconColor="#7289d9"
+                />
+                <Checkbox
+                    text="Enable Discord Notifications"
+                    subtitle="Enable notifications of loot drops and errors encountered by the bot via Discord DMs."
+                    isChecked={bsc.settings.discord.enableDiscordNotifications}
+                    onPress={() => bsc.setSettings({ ...bsc.settings, discord: { ...bsc.settings.discord, enableDiscordNotifications: !bsc.settings.discord.enableDiscordNotifications } })}
+                />
+                {bsc.settings.discord.enableDiscordNotifications ? (
+                    <View>
+                        <Input
+                            label="Discord Token"
+                            multiline
+                            containerStyle={{ marginLeft: -10 }}
+                            value={bsc.settings.discord.discordToken}
+                            onChangeText={(value: string) => bsc.setSettings({ ...bsc.settings, discord: { ...bsc.settings.discord, discordToken: value } })}
+                        />
+                        <Input
+                            label="Discord User ID"
+                            multiline
+                            containerStyle={{ marginLeft: -10 }}
+                            value={bsc.settings.discord.discordUserID}
+                            onChangeText={(value: string) => bsc.setSettings({ ...bsc.settings, discord: { ...bsc.settings.discord, discordUserID: value } })}
+                        />
+                    </View>
+                ) : null}
+            </View>
+        )
+    }
 
     const renderDeviceSettings = () => {
         return (
@@ -136,7 +171,11 @@ const ExtraSettings = () => {
 
     return (
         <View style={styles.root}>
-            <ScrollView>{renderDeviceSettings()}</ScrollView>
+            <ScrollView>
+                {renderDiscordSettings()}
+
+                {renderDeviceSettings()}
+            </ScrollView>
 
             <SnackBar
                 visible={showSnackbar}

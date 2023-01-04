@@ -4,7 +4,6 @@ import SnackBar from "rn-snackbar-component"
 import { BotStateContext } from "../../context/BotStateContext"
 import { ScrollView, StyleSheet, View } from "react-native"
 import CustomCheckbox from "../../components/CustomCheckbox"
-import { Input } from "react-native-elements"
 import TitleDivider from "../../components/TitleDivider"
 
 const styles = StyleSheet.create({
@@ -46,55 +45,9 @@ const Settings = () => {
         )
     }
 
-    const renderDiscordSettings = () => {
-        return (
-            <View>
-                <TitleDivider
-                    title="Discord Settings"
-                    subtitle="Please visit the wiki on the GitHub page for instructions on how to get the token and user ID."
-                    hasIcon={true}
-                    iconName="discord"
-                    iconColor="#7289d9"
-                />
-
-                <CustomCheckbox
-                    isChecked={bsc.settings.discord.enableDiscordNotifications}
-                    onPress={() => bsc.setSettings({ ...bsc.settings, discord: { ...bsc.settings.discord, enableDiscordNotifications: !bsc.settings.discord.enableDiscordNotifications } })}
-                    text="Enable Discord Notifications"
-                    subtitle="Check this to enable having the bot send you status notifications via Discord DM."
-                />
-
-                {bsc.settings.discord.enableDiscordNotifications ? (
-                    <View>
-                        <Input
-                            label="Discord Token"
-                            multiline
-                            containerStyle={{ marginLeft: -10 }}
-                            value={bsc.settings.discord.discordToken}
-                            onChangeText={(value: string) => bsc.setSettings({ ...bsc.settings, discord: { ...bsc.settings.discord, discordToken: value } })}
-                            autoCompleteType="off"
-                        />
-                        <Input
-                            label="Discord User ID"
-                            multiline
-                            containerStyle={{ marginLeft: -10 }}
-                            value={bsc.settings.discord.discordUserID}
-                            onChangeText={(value: string) => bsc.setSettings({ ...bsc.settings, discord: { ...bsc.settings.discord, discordUserID: value } })}
-                            autoCompleteType="off"
-                        />
-                    </View>
-                ) : null}
-            </View>
-        )
-    }
-
     return (
         <View style={styles.root}>
-            <ScrollView>
-                {renderSampleSettings()}
-
-                {renderDiscordSettings()}
-            </ScrollView>
+            <ScrollView>{renderSampleSettings()}</ScrollView>
 
             <SnackBar
                 visible={snackbarOpen}
