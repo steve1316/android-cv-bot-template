@@ -48,6 +48,8 @@ interface IProviderProps {
     setStopBot: (stopBot: boolean) => void
     settings: Settings
     setSettings: (settings: Settings) => void
+    appVersion: string
+    setAppVersion: (appVersion: string) => void
 }
 
 export const BotStateContext = createContext<IProviderProps>({} as IProviderProps)
@@ -58,6 +60,7 @@ export const BotStateProvider = ({ children }: any): JSX.Element => {
     const [isBotRunning, setIsBotRunning] = useState<boolean>(false)
     const [startBot, setStartBot] = useState<boolean>(false)
     const [stopBot, setStopBot] = useState<boolean>(false)
+    const [appVersion, setAppVersion] = useState<string>("")
 
     const [settings, setSettings] = useState<Settings>(defaultSettings)
 
@@ -72,6 +75,8 @@ export const BotStateProvider = ({ children }: any): JSX.Element => {
         setStopBot,
         settings,
         setSettings,
+        appVersion,
+        setAppVersion,
     }
 
     return <BotStateContext.Provider value={providerValues}>{children}</BotStateContext.Provider>

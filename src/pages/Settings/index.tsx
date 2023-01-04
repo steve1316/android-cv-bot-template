@@ -4,7 +4,7 @@ import SnackBar from "rn-snackbar-component"
 import { BotStateContext } from "../../context/BotStateContext"
 import { ScrollView, StyleSheet, View } from "react-native"
 import CustomCheckbox from "../../components/CustomCheckbox"
-import { TextInput } from "react-native-paper"
+import { Input } from "react-native-elements"
 import TitleDivider from "../../components/TitleDivider"
 
 const styles = StyleSheet.create({
@@ -66,24 +66,21 @@ const Settings = () => {
 
                 {bsc.settings.discord.enableDiscordNotifications ? (
                     <View>
-                        <TextInput
+                        <Input
                             label="Discord Token"
-                            mode="outlined"
                             multiline
-                            right={<TextInput.Icon name="close" onPress={() => bsc.setSettings({ ...bsc.settings, discord: { ...bsc.settings.discord, discordToken: "" } })} />}
+                            containerStyle={{ marginLeft: -10 }}
                             value={bsc.settings.discord.discordToken}
                             onChangeText={(value: string) => bsc.setSettings({ ...bsc.settings, discord: { ...bsc.settings.discord, discordToken: value } })}
-                            autoComplete={false}
+                            autoCompleteType="off"
                         />
-
-                        <TextInput
+                        <Input
                             label="Discord User ID"
-                            mode="outlined"
                             multiline
-                            right={<TextInput.Icon name="close" onPress={() => bsc.setSettings({ ...bsc.settings, discord: { ...bsc.settings.discord, discordUserID: "" } })} />}
+                            containerStyle={{ marginLeft: -10 }}
                             value={bsc.settings.discord.discordUserID}
                             onChangeText={(value: string) => bsc.setSettings({ ...bsc.settings, discord: { ...bsc.settings.discord, discordUserID: value } })}
-                            autoComplete={false}
+                            autoCompleteType="off"
                         />
                     </View>
                 ) : null}
