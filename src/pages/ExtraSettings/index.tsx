@@ -1,10 +1,14 @@
 import Checkbox from "../../components/CustomCheckbox"
+import LoadingButton from "../../components/LoadingButton"
+import MIcon from "react-native-vector-icons/MaterialCommunityIcons"
 import NumericInput from "react-native-numeric-input"
-import React, { useContext, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
+import SnackBar from "rn-snackbar-component"
 import TitleDivider from "../../components/TitleDivider"
 import { BotStateContext } from "../../context/BotStateContext"
-import { Dimensions, ScrollView, StyleSheet, View } from "react-native"
-import { Text } from "react-native-elements"
+import { DeviceEventEmitter, Dimensions, ScrollView, StyleSheet, View } from "react-native"
+import { Input, Text } from "react-native-elements"
+import { NativeModules } from "react-native" // Import native Java module.
 import { Slider } from "@sharcoux/slider"
 
 const styles = StyleSheet.create({
@@ -43,6 +47,49 @@ const ExtraSettings = () => {
     //////////////////////////////////////////////////
     //////////////////////////////////////////////////
     // Rendering
+
+    const renderTwitterSettings = () => {
+        return (
+            <View>
+                <TitleDivider
+                    title="Twitter Settings"
+                    subtitle="Please visit the wiki on the GitHub page for instructions on how to get these keys and tokens. In addition, API v1.1 is supported but not API v2."
+                    hasIcon={true}
+                    iconName="twitter"
+                    iconColor="#1da1f2"
+                />
+
+                <Input
+                    label="Twitter API Key"
+                    multiline
+                    containerStyle={{ marginLeft: -10 }}
+                    value={bsc.settings.twitter.twitterAPIKey}
+                    onChangeText={(value: string) => bsc.setSettings({ ...bsc.settings, twitter: { ...bsc.settings.twitter, twitterAPIKey: value } })}
+                />
+                <Input
+                    label="Twitter API Key Secret"
+                    multiline
+                    containerStyle={{ marginLeft: -10 }}
+                    value={bsc.settings.twitter.twitterAPIKeySecret}
+                    onChangeText={(value: string) => bsc.setSettings({ ...bsc.settings, twitter: { ...bsc.settings.twitter, twitterAPIKeySecret: value } })}
+                />
+                <Input
+                    label="Twitter Access Token"
+                    multiline
+                    containerStyle={{ marginLeft: -10 }}
+                    value={bsc.settings.twitter.twitterAccessToken}
+                    onChangeText={(value: string) => bsc.setSettings({ ...bsc.settings, twitter: { ...bsc.settings.twitter, twitterAccessToken: value } })}
+                />
+                <Input
+                    label="Twitter Access Token Secret"
+                    multiline
+                    containerStyle={{ marginLeft: -10 }}
+                    value={bsc.settings.twitter.twitterAccessTokenSecret}
+                    onChangeText={(value: string) => bsc.setSettings({ ...bsc.settings, twitter: { ...bsc.settings.twitter, twitterAccessTokenSecret: value } })}
+                />
+            </View>
+        )
+    }
 
     const renderDiscordSettings = () => {
         return (
@@ -172,6 +219,8 @@ const ExtraSettings = () => {
     return (
         <View style={styles.root}>
             <ScrollView>
+                {renderTwitterSettings()}
+
                 {renderDiscordSettings()}
 
                 {renderDeviceSettings()}

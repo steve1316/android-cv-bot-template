@@ -3,6 +3,15 @@ import React, { createContext, useState } from "react"
 export interface Settings {
     property1: boolean
 
+    // Twitter settings.
+    twitter: {
+        twitterAPIKey: string
+        twitterAPIKeySecret: string
+        twitterAccessToken: string
+        twitterAccessTokenSecret: string
+    }
+
+    // Discord settings.
     discord: {
         enableDiscordNotifications: boolean
         discordToken: string
@@ -22,6 +31,12 @@ export interface Settings {
 // Set the default settings.
 export const defaultSettings: Settings = {
     property1: false,
+    twitter: {
+        twitterAPIKey: "",
+        twitterAPIKeySecret: "",
+        twitterAccessToken: "",
+        twitterAccessTokenSecret: "",
+    },
     discord: {
         enableDiscordNotifications: false,
         discordToken: "",
