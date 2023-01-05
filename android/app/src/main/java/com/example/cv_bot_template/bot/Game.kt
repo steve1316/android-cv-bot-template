@@ -12,6 +12,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.opencv.core.Point
 import java.util.concurrent.TimeUnit
+import com.example.cv_bot_template.utils.MediaProjectionService as MPS
 
 /**
  * Main driver for bot activity and navigation.
@@ -118,9 +119,9 @@ class Game(private val myContext: Context) {
 	 *
 	 */
 	private fun landscapeCheck() {
-		if (MediaProjectionService.displayHeight > MediaProjectionService.displayWidth) {
+		if (MPS.displayHeight > MPS.displayWidth) {
 			Log.d(tag, "Virtual Display is not correct. Recreating it now...")
-			MediaProjectionService.forceGenerateVirtualDisplay(myContext)
+			MPS.forceGenerateVirtualDisplay(myContext)
 		} else {
 			Log.d(tag, "Skipping recreation of Virtual Display as it is correct.")
 		}
@@ -143,6 +144,8 @@ class Game(private val myContext: Context) {
 		landscapeCheck()
 
 		wait(0.5)
+
+		printToLog("Device dimensions: ${MPS.displayHeight}x${MPS.displayWidth}\n")
 
 		printToLog("\n[INFO] I am ending here!")
 

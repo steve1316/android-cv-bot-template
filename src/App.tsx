@@ -1,7 +1,6 @@
 import Home from "./pages/Home"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import React from "react"
-import RNBootSplash from "react-native-bootsplash"
 import Settings from "./pages/Settings"
 import Start from "./components/Start"
 import { BotStateProvider } from "./context/BotStateContext"
@@ -17,7 +16,7 @@ function App() {
         <BotStateProvider>
             <MessageLogProvider>
                 <Start />
-                <NavigationContainer onReady={() => RNBootSplash.hide({ fade: true })}>
+                <NavigationContainer>
                     <Tab.Navigator
                         screenOptions={({ route }) => ({
                             tabBarIcon: ({ focused, color, size }: { focused: boolean; color: string; size: number }) => {

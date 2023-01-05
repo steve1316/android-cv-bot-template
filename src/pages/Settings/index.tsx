@@ -1,19 +1,9 @@
-import Ionicons from "react-native-vector-icons/Ionicons"
 import React, { useContext, useEffect, useState } from "react"
-import SnackBar from "rn-snackbar-component"
+import { Snackbar } from "react-native-paper"
 import { BotStateContext } from "../../context/BotStateContext"
-import { ScrollView, StyleSheet, View, LogBox } from "react-native"
-import ignoreWarnings from "ignore-warnings"
+import { ScrollView, StyleSheet, View } from "react-native"
 import CustomCheckbox from "../../components/CustomCheckbox"
 import TitleDivider from "../../components/TitleDivider"
-
-// Ignores the warning from the newer version of React Native as per https://github.com/facebook/react-native/issues/33557.
-ignoreWarnings("warn", ["ViewPropTypes", "[react-native-gesture-handler]"])
-LogBox.ignoreLogs([
-    "ViewPropTypes will be removed from React Native. Migrate to ViewPropTypes exported from 'deprecated-react-native-prop-types'.",
-    "NativeBase: The contrast ratio of",
-    "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",
-])
 
 const styles = StyleSheet.create({
     root: {
@@ -62,15 +52,20 @@ const Settings = () => {
         <View style={styles.root}>
             <ScrollView>{renderSampleSettings()}</ScrollView>
 
-            <SnackBar
+            <Snackbar
                 visible={snackbarOpen}
-                message={bsc.readyStatus ? "Bot is ready!" : "Bot is not ready!"}
-                actionHandler={() => setSnackbarOpen(false)}
-                action={<Ionicons name="close" size={30} />}
-                autoHidingTime={1500}
-                containerStyle={{ backgroundColor: bsc.readyStatus ? "green" : "red", borderRadius: 10 }}
-                native={false}
-            />
+                onDismiss={() => setSnackbarOpen(false)}
+                action={{
+                    label: "Close",
+                    onPress: () => {
+                        setSnackbarOpen(false)
+                    },
+                }}
+                duration={1500}
+                style={{ backgroundColor: bsc.readyStatus ? "green" : "red", borderRadius: 10 }}
+            >
+                {bsc.readyStatus ? "Bot is ready!" : "Bot is not ready!"}
+            </Snackbar>
         </View>
     )
 }

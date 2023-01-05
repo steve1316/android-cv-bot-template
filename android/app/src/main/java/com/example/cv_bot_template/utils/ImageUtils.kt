@@ -89,7 +89,7 @@ class ImageUtils(context: Context, private val game: Game) {
 		updateMatchFilePath(matchFilePath)
 
 		// Uncomment the below line to initialize Tesseract for the purposes of OCR text recognition.
-		initTesseract("SET FILE NAME OF .TRAINEDDATA FOR TESSERACT INITIALIZATION HERE")
+		// initTesseract("SET FILE NAME OF .TRAINEDDATA FOR TESSERACT INITIALIZATION HERE")
 	}
 
 	////////////////////////////////////////////////////////////////////

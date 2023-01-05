@@ -13,6 +13,7 @@ import android.os.Build
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.widget.Toast
+import com.example.cv_bot_template.MainActivity
 import com.example.cv_bot_template.MainActivity.loggerTag
 import com.example.cv_bot_template.R
 import kotlinx.coroutines.delay
@@ -25,7 +26,7 @@ import kotlinx.coroutines.runBlocking
  */
 class MyAccessibilityService : AccessibilityService() {
 	private val tag: String = "${loggerTag}MyAccessibilityService"
-	private var appName: String = myContext.getString(R.string.app_name)
+	private var appName: String = ""
 	private lateinit var myContext: Context
 
 	companion object {
@@ -62,6 +63,7 @@ class MyAccessibilityService : AccessibilityService() {
 	override fun onServiceConnected() {
 		instance = this
 		myContext = this
+		appName = myContext.getString(R.string.app_name)
 
 		Log.d(tag, "Accessibility Service for $appName is now running.")
 		Toast.makeText(myContext, "Accessibility Service for $appName is now running.", Toast.LENGTH_SHORT).show()

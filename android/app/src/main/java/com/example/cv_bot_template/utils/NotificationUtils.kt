@@ -72,14 +72,15 @@ class NotificationUtils {
 		private fun createNewNotification(context: Context): Notification {
 			// Create a PendingIntent to send the user back to the application if they tap the notification itself.
 			val contentIntent = Intent(context, MainActivity::class.java)
-			val contentPendingIntent = PendingIntent.getActivity(context, NOTIFICATION_ID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+			val contentPendingIntent = PendingIntent.getActivity(context, NOTIFICATION_ID, contentIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
 
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 				// Create a STOP Intent for the MediaProjection service.
 				val stopIntent = Intent(context, StopServiceReceiver::class.java)
 
 				// Create a PendingIntent in order to add a action button to stop the MediaProjection service in the notification.
-				val stopPendingIntent: PendingIntent = PendingIntent.getBroadcast(context, System.currentTimeMillis().toInt(), stopIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+				val stopPendingIntent: PendingIntent =
+					PendingIntent.getBroadcast(context, System.currentTimeMillis().toInt(), stopIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT)
 
 				return NotificationCompat.Builder(context, CHANNEL_ID).apply {
 					setSmallIcon(R.drawable.ic_baseline_control_camera_24)
@@ -117,14 +118,15 @@ class NotificationUtils {
 		fun updateNotification(context: Context, message: String, title: String = "Status", displayBigText: Boolean = false) {
 			// Create a PendingIntent to send the user back to the application if they tap the notification itself.
 			val contentIntent = Intent(context, MainActivity::class.java)
-			val contentPendingIntent = PendingIntent.getActivity(context, NOTIFICATION_ID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+			val contentPendingIntent = PendingIntent.getActivity(context, NOTIFICATION_ID, contentIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
 
 			val newNotification = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 				// Create a STOP Intent for the MediaProjection service.
 				val stopIntent = Intent(context, StopServiceReceiver::class.java)
 
 				// Create a PendingIntent in order to add a action button to stop the MediaProjection service in the notification.
-				val stopPendingIntent: PendingIntent = PendingIntent.getBroadcast(context, System.currentTimeMillis().toInt(), stopIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+				val stopPendingIntent: PendingIntent =
+					PendingIntent.getBroadcast(context, System.currentTimeMillis().toInt(), stopIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT)
 
 				if (displayBigText) {
 					NotificationCompat.Builder(context, CHANNEL_ID).apply {

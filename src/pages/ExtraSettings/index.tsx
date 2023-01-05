@@ -1,9 +1,8 @@
 import Checkbox from "../../components/CustomCheckbox"
 import LoadingButton from "../../components/LoadingButton"
-import MIcon from "react-native-vector-icons/MaterialCommunityIcons"
 import NumericInput from "react-native-numeric-input"
 import React, { useContext, useEffect, useState } from "react"
-import SnackBar from "rn-snackbar-component"
+import { Snackbar } from "react-native-paper"
 import TitleDivider from "../../components/TitleDivider"
 import { BotStateContext } from "../../context/BotStateContext"
 import { DeviceEventEmitter, Dimensions, ScrollView, StyleSheet, View } from "react-native"
@@ -280,15 +279,20 @@ const ExtraSettings = () => {
                 {renderDeviceSettings()}
             </ScrollView>
 
-            <SnackBar
+            <Snackbar
                 visible={showSnackbar}
-                message={testFailed ? testErrorMessage : "Test was successful."}
-                actionHandler={() => setShowSnackbar(false)}
-                action={<MIcon name="close" size={25} />}
-                autoHidingTime={10000}
-                containerStyle={{ backgroundColor: testFailed ? "red" : "green", borderRadius: 10 }}
-                native={false}
-            />
+                onDismiss={() => setShowSnackbar(false)}
+                action={{
+                    label: "Close",
+                    onPress: () => {
+                        setShowSnackbar(false)
+                    },
+                }}
+                duration={10000}
+                style={{ backgroundColor: testFailed ? "red" : "green", borderRadius: 10 }}
+            >
+                {testFailed ? testErrorMessage : "Test was successful."}
+            </Snackbar>
         </View>
     )
 }

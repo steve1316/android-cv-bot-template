@@ -132,12 +132,6 @@ class BotService : Service() {
 									game.start()
 
 									performCleanUp()
-
-									thread {
-										runBlocking {
-											DiscordUtils.disconnectClient()
-										}
-									}
 								} catch (e: Exception) {
 									if (e.toString() == "java.lang.InterruptedException") {
 										NotificationUtils.updateNotification(myContext, "Bot has completed successfully with no errors.")
@@ -157,14 +151,6 @@ class BotService : Service() {
 											DiscordUtils.queue.add("> $message2")
 										} else {
 											DiscordUtils.queue.add("> Bot encountered exception in Farming Mode: \n${e.stackTraceToString()}")
-										}
-
-										if (PreferenceManager.getDefaultSharedPreferences(myContext).getBoolean("enableDiscordNotifications", false)) {
-											thread {
-												runBlocking {
-													DiscordUtils.disconnectClient()
-												}
-											}
 										}
 									}
 
