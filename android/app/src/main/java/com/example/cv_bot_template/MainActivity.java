@@ -9,6 +9,7 @@ import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
 import com.github.javiersantos.appupdater.AppUpdater;
 import com.github.javiersantos.appupdater.enums.UpdateFrom;
+import com.zoontek.rnbootsplash.RNBootSplash;
 
 import org.opencv.android.OpenCVLoader;
 
@@ -19,7 +20,7 @@ public class MainActivity extends ReactActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //RNBootSplash.init(this); // initialize the splash screen for react-native-bootsplash
+        RNBootSplash.init(this); // initialize the splash screen for react-native-bootsplash
         super.onCreate(null); // null for react-native-screens
 
         // Set application locale to combat cases where user's language uses commas instead of decimal points for floating numbers.

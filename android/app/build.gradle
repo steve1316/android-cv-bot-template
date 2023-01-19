@@ -242,17 +242,11 @@ android {
 
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
-        variant.outputs.each { output ->
-            // For each separate APK per architecture, set a unique version code as described here:
-            // https://developer.android.com/studio/build/configure-apk-splits.html
-            // Example: versionCode 1 will generate 1001 for armeabi-v7a, 1002 for x86, etc.
-            def versionCodes = ["armeabi-v7a": 1, "x86": 2, "arm64-v8a": 3, "x86_64": 4]
-            def abi = output.getFilter(OutputFile.ABI)
-            if (abi != null) {  // null for the universal-debug, universal-release variants
-                output.versionCodeOverride =
-                        defaultConfig.versionCode * 1000 + versionCodes.get(abi)
-            }
-
+        variant.outputs.all { output ->
+            def appName = defaultConfig.applicationId
+            def versionName = defaultConfig.versionName
+            def architecture = output.filters[0].identifier
+            outputFileName = "v${versionName}-${appName}-${architecture}.apk"
         }
     }
 
@@ -297,37 +291,18 @@ dependencies {
         implementation jscFlavor
     }
 
-    //////// Project-specific ////////
-
-    // Preferences
-    implementation 'androidx.preference:preference-ktx:1.2.0'
-
-    // OpenCV Android 4.7.0 for image processing.
-    implementation project(path: ':opencv')
-
-    // Google's Firebase Machine Learning OCR for Text Detection.
-    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:18.0.2'
-
-    // Tesseract4Android for OCR text recognition.
-    implementation 'cz.adaptech.android:tesseract4android:2.1.1'
-
-    // Twitter4j is used to connect to the Twitter API.
-    implementation "org.twitter4j:twitter4j-core:4.1.2"
-
-    // AppUpdater for notifying users when there is a new update available.
-    implementation 'com.github.javiersantos:AppUpdater:2.7'
-
-    // Javacord for Discord integration.
-    implementation 'org.javacord:javacord:3.3.2'
-
-    // Klaxon to parse JSON data files.
-    implementation 'com.beust:klaxon:5.5'
+    //////// React Native specific ////////
 
     // Module to interact with Android File System.
     implementation project(':react-native-fs')
 
-    // This is needed to return the version number of the app back to the frontend.
-    implementation project(':react-native-version-number')
+    //////// Automation Library ////////
+
+    // Note that the dependencies necessary are already available for the whole project via the library's build.gradle using the api configuration.
+    implementation("com.github.steve1316:android-cv-automation-library:1.0.0")
+
+    //////// Project specific ////////
+
 }
 
 if (isNewArchitectureEnabled()) {

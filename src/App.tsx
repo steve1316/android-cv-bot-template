@@ -8,6 +8,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { MessageLogProvider } from "./context/MessageLogContext"
 import { NavigationContainer } from "@react-navigation/native"
 import ExtraSettings from "./pages/ExtraSettings"
+import RNBootSplash from "react-native-bootsplash"
 
 const Tab = createBottomTabNavigator()
 
@@ -16,7 +17,7 @@ function App() {
         <BotStateProvider>
             <MessageLogProvider>
                 <Start />
-                <NavigationContainer>
+                <NavigationContainer onReady={() => RNBootSplash.hide({ fade: true })}>
                     <Tab.Navigator
                         screenOptions={({ route }) => ({
                             tabBarIcon: ({ focused, color, size }: { focused: boolean; color: string; size: number }) => {

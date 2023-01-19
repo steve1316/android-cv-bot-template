@@ -5,19 +5,22 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
-import com.example.cv_bot_template.MainActivity.loggerTag
-import org.json.JSONArray
+import com.example.cv_bot_template.MainActivity
+import com.steve1316.automation_library.utils.JSONParser
 import org.json.JSONObject
 import java.io.File
 
-class JSONParser {
-	/**
-	 * Initialize settings from the JSON file.
-	 *
-	 * @param myContext The application context.
-	 */
-	fun initializeSettings(myContext: Context) {
-		Log.d(loggerTag, "Loading settings from JSON file to SharedPreferences...")
+/**
+ * Custom JSONParser implementation to suit whatever settings the developer needs to pull from the settings.json file.
+ *
+ * Available helper methods are
+ *
+ */
+class CustomJSONParser : JSONParser() {
+	private val tag = "${MainActivity.loggerTag}MyJSONParser"
+
+	override fun initializeSettings(myContext: Context) {
+		Log.d(tag, "Loading settings from JSON file to SharedPreferences...")
 
 		// Grab the JSON object from the file.
 		val jString = File(myContext.getExternalFilesDir(null), "settings.json").bufferedReader().use { it.readText() }
@@ -32,23 +35,27 @@ class JSONParser {
 		val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(myContext)
 
 		try {
-			val discordObj = jObj.getJSONObject("discord")
-
+			val twitterObj = jObj.getJSONObject("twitter")
 			sharedPreferences.edit {
-				discordObj.keys().forEach { key ->
-					when (key) {
-						"enableDiscordNotifications" -> {
-							putBoolean(key, discordObj[key] as Boolean)
-						}
-						else -> {
-							putString(key, discordObj[key] as String)
-						}
-					}
-				}
-
+				putString("twitterAPIKey", twitterObj.getString("twitterAPIKey"))
+				putString("twitterAPIKeySecret", twitterObj.getString("twitterAPIKeySecret"))
+				putString("twitterAccessToken", twitterObj.getString("twitterAccessToken"))
+				putString("twitterAccessTokenSecret", twitterObj.getString("twitterAccessTokenSecret"))
 				commit()
 			}
-		} catch(e: Exception) {}
+		} catch (_: Exception) {
+		}
+
+		try {
+			val discordObj = jObj.getJSONObject("discord")
+			sharedPreferences.edit {
+				putBoolean("enableDiscordNotifications", discordObj.getBoolean("enableDiscordNotifications"))
+				putString("discordToken", discordObj.getString("discordToken"))
+				putString("discordUserID", discordObj.getString("discordUserID"))
+				commit()
+			}
+		} catch (_: Exception) {
+		}
 
 		try {
 			val androidObj = jObj.getJSONObject("android")
@@ -61,43 +68,12 @@ class JSONParser {
 				putBoolean("enableTestForHomeScreen", androidObj.getBoolean("enableTestForHomeScreen"))
 				commit()
 			}
-		} catch (e: Exception) {
-		}
-	}
-
-	/**
-	 * Convert JSONArray to ArrayList<String> object.
-	 *
-	 * @param jsonArray The JSONArray object to be converted.
-	 * @return The converted ArrayList<String> object.
-	 */
-	private fun toStringArrayList(jsonArray: JSONArray): ArrayList<String> {
-		val newArrayList: ArrayList<String> = arrayListOf()
-
-		var i = 0
-		while (i < jsonArray.length()) {
-			newArrayList.add(jsonArray.get(i) as String)
-			i++
+		} catch (_: Exception) {
 		}
 
-		return newArrayList
-	}
+		//////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////
 
-	/**
-	 * Convert JSONArray to ArrayList<Int> object.
-	 *
-	 * @param jsonArray The JSONArray object to be converted.
-	 * @return The converted ArrayList<Int> object.
-	 */
-	private fun toIntArrayList(jsonArray: JSONArray): ArrayList<Int> {
-		val newArrayList: ArrayList<Int> = arrayListOf()
-
-		var i = 0
-		while (i < jsonArray.length()) {
-			newArrayList.add(jsonArray.get(i) as Int)
-			i++
-		}
-
-		return newArrayList
+		Log.d(tag, "Finished loading settings from JSON file to SharedPreferences.")
 	}
 }

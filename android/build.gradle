@@ -53,4 +53,15 @@ allprojects {
         google()
         maven { url 'https://www.jitpack.io' }
     }
+
+    // Bypasses the "This custom view should extend androidx.appcompat.widget.AppCompatCheckedTextView instead [AppCompatCustomView]" error
+    // for the react native picker.
+    afterEvaluate {
+        if (getPlugins().hasPlugin('android') || getPlugins().hasPlugin('android-library')) {
+            configure(android.lintOptions) {
+                abortOnError false
+                checkReleaseBuilds false
+            }
+        }
+    }
 }
