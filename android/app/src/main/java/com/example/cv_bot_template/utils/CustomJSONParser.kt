@@ -13,11 +13,11 @@ import java.io.File
 /**
  * Custom JSONParser implementation to suit whatever settings the developer needs to pull from the settings.json file.
  *
- * Available helper methods are
+ * Available helper methods are toStringArrayList() and toIntArrayList().
  *
  */
 class CustomJSONParser : JSONParser() {
-	private val tag = "${MainActivity.loggerTag}MyJSONParser"
+	private val tag = "${MainActivity.loggerTag}CustomJSONParser"
 
 	override fun initializeSettings(myContext: Context) {
 		Log.d(tag, "Loading settings from JSON file to SharedPreferences...")
