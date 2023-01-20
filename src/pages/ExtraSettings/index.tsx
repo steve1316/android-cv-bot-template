@@ -2,13 +2,13 @@ import Checkbox from "../../components/CustomCheckbox"
 import LoadingButton from "../../components/LoadingButton"
 import NumericInput from "react-native-numeric-input"
 import React, { useContext, useEffect, useState } from "react"
-import { Snackbar } from "react-native-paper"
 import TitleDivider from "../../components/TitleDivider"
 import { BotStateContext } from "../../context/BotStateContext"
 import { DeviceEventEmitter, Dimensions, ScrollView, StyleSheet, View } from "react-native"
 import { Input, Text } from "react-native-elements"
-import { NativeModules } from "react-native" // Import native Java module.
+import { NativeModules } from "react-native"
 import { Slider } from "@sharcoux/slider"
+import { Snackbar } from "react-native-paper"
 
 const styles = StyleSheet.create({
     root: {

@@ -1,9 +1,9 @@
+import CustomCheckbox from "../../components/CustomCheckbox"
 import React, { useContext, useEffect, useState } from "react"
-import { Snackbar } from "react-native-paper"
+import TitleDivider from "../../components/TitleDivider"
 import { BotStateContext } from "../../context/BotStateContext"
 import { ScrollView, StyleSheet, View } from "react-native"
-import CustomCheckbox from "../../components/CustomCheckbox"
-import TitleDivider from "../../components/TitleDivider"
+import { Snackbar } from "react-native-paper"
 
 const styles = StyleSheet.create({
     root: {

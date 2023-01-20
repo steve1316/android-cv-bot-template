@@ -1,11 +1,11 @@
 import CustomButton from "../../components/CustomButton"
+import DeviceInfo from "react-native-device-info"
 import MessageLog from "../../components/MessageLog"
 import React, { useContext, useEffect, useState } from "react"
 import { BotStateContext } from "../../context/BotStateContext"
 import { DeviceEventEmitter, StyleSheet, View } from "react-native"
 import { MessageLogContext } from "../../context/MessageLogContext"
-import { NativeModules } from "react-native" // Import native Java module.
-import DeviceInfo from "react-native-device-info"
+import { NativeModules } from "react-native"
 
 const styles = StyleSheet.create({
     root: {
