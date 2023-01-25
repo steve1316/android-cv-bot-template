@@ -3,9 +3,6 @@ plugins {
     id 'kotlin-android'
 }
 
-
-import com.android.build.OutputFile
-
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
  * and bundleReleaseJsAndAssets).
@@ -82,7 +79,7 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-        enableHermes   : true,  // clean and rebuild if changing
+        enableHermes   : false,  // clean and rebuild if changing
         bundleInDebug  : true,
         bundleInRelease: true
 ]
@@ -133,10 +130,18 @@ def enableHermes = project.ext.react.get("enableHermes", false)
 /**
  * Architectures to build native code for.
  */
-//def reactNativeArchitectures() {
-//    def value = project.getProperties().get("reactNativeArchitectures")
-//    return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
-//}
+def reactNativeArchitectures() {
+    def value = project.getProperties().get("reactNativeArchitectures")
+    return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
+}
+
+/**
+ * Get the name of the application from the strings.xml file.
+ */
+def getAppName() {
+    def stringsFile = android.sourceSets.main.res.sourceFiles.find { it.name.equals 'strings.xml' }
+    return new XmlParser().parse(stringsFile).string.find { it.@name.equals 'app_name' }.text()
+}
 
 android {
     ndkVersion rootProject.ext.ndkVersion
@@ -243,7 +248,7 @@ android {
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            def appName = defaultConfig.applicationId
+            def appName = getAppName()
             def versionName = defaultConfig.versionName
             def architecture = output.filters[0].identifier
             outputFileName = "v${versionName}-${appName}-${architecture}.apk"
@@ -299,7 +304,7 @@ dependencies {
     //////// Automation Library ////////
 
     // Note that the dependencies necessary are already available for the whole project via the library's build.gradle using the api configuration.
-    implementation("com.github.steve1316:android-cv-automation-library:1.0.0")
+    implementation("com.github.steve1316:android-cv-automation-library:1.0.9")
 
     //////// Project specific ////////
 

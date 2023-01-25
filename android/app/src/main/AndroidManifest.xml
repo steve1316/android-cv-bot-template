@@ -9,9 +9,6 @@
     <!--Grants permission to display a floating START/STOP button that persists across any View.-->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
-    <!--Grants permission to download and update the application's Firebase Machine Learning OCR.-->
-    <uses-permission android:name="android.permission.INTERNET" />
-
     <!--Grants permission to read and write to external storage for Tesseract's traineddata file.-->
     <!--Note that Android 10+ no longer gives permissions to write to External Storage, only Internal with heavy restrictions.-->
     <uses-permission
