@@ -91,7 +91,7 @@ class EntryPoint(private val myContext: Context) {
 
 		wait(0.5)
 
-		MessageLog.printToLog("Device dimensions: ${MediaProjectionService.displayHeight}x${MediaProjectionService.displayWidth}\n", tag)
+		MessageLog.printToLog("[INFO] Device dimensions: ${MediaProjectionService.displayHeight}x${MediaProjectionService.displayWidth}\n", tag)
 
 		gestureUtils.tap(550.0, 2060.0)
 
@@ -99,7 +99,7 @@ class EntryPoint(private val myContext: Context) {
 
 		val endTime: Long = System.currentTimeMillis()
 		val runTime: Long = endTime - startTime
-		MessageLog.printToLog("Total Runtime: ${runTime}ms", tag)
+		MessageLog.printToLog("\nTotal Runtime: ${runTime}ms", tag)
 
 		val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(myContext)
 		if (sharedPreferences.getBoolean("enableDiscordNotifications", false)) {
