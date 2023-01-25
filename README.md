@@ -11,7 +11,7 @@
 -   [Master Duel Decklist Importer](https://github.com/steve1316/masterduel-android-decklist-importer)
 -   [Girls' Frontline Android Auto](https://github.com/steve1316/gfl-android-auto)
 
-This template project serves as a starter point for Android botting or as a general framework that relies on Computer Vision template matching via OpenCV and executing gestures like tapping and scrolling to accomplish a automation goal. It uses MediaProjection Service to programmatically take screenshots and the Accessibility Service to execute gestures. The framework is well annotated with documentation to serve as explanations and usage hints.
+This template project serves as a starter point for Android botting that relies on Computer Vision template matching via OpenCV and executing gestures like tapping and scrolling to accomplish a automation goal. It uses MediaProjection Service to programmatically take screenshots and the Accessibility Service to execute gestures. The framework itself, [Automation Library](https://github.com/steve1316/android-cv-automation-library), is well annotated with documentation to serve as explanations and usage hints.
 
 https://user-images.githubusercontent.com/18709555/118407909-c933be00-b637-11eb-92c2-3c4acd355aff.mp4
 
@@ -32,9 +32,10 @@ https://user-images.githubusercontent.com/18709555/118407909-c933be00-b637-11eb-
     1. (Experimental) Tablets supported with minimum 1600 pixel width like the Galaxy Tab S7. If oriented portrait, browsers like Chrome needs to have Desktop Mode turned off and situated on the left half of the tablet. If landscape, browsers like Chrome needs to have Desktop Mode turned on and situated on the left half of the tablet.
     2. Tested emulator was Bluestacks 5 with the following settings:
         - P64 (Beta)
-        - 1080x1920 (Portrait Mode as emulators do not have a way to tell the bot that it rotated.)
+        - 1080p
         - 240 DPI
         - 4+ GB of Memory
+2. Display is set to FHD (1080p). If not, then will need to adjust scales in the Extra Settings page to accommodate.
 
 # Instructions
 
