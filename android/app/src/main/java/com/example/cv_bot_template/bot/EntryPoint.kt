@@ -6,10 +6,12 @@ import android.util.Log
 import androidx.preference.PreferenceManager
 import com.example.cv_bot_template.MainActivity.loggerTag
 import com.example.cv_bot_template.data.ConfigData
+import com.steve1316.automation_library.data.SharedData
 import com.steve1316.automation_library.utils.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.opencv.core.Point
+import com.steve1316.automation_library.utils.MediaProjectionService as MPS
 
 /**
  * Main driver for bot activity and navigation.
@@ -65,9 +67,9 @@ class EntryPoint(private val myContext: Context) {
 	 *
 	 */
 	private fun landscapeCheck() {
-		if (MediaProjectionService.displayHeight > MediaProjectionService.displayWidth) {
+		if (SharedData.displayHeight > SharedData.displayWidth) {
 			Log.d(tag, "Virtual Display is not correct. Recreating it now...")
-			MediaProjectionService.forceGenerateVirtualDisplay(myContext)
+			MPS.forceGenerateVirtualDisplay(myContext)
 		} else {
 			Log.d(tag, "Skipping recreation of Virtual Display as it is correct.")
 		}
@@ -91,7 +93,7 @@ class EntryPoint(private val myContext: Context) {
 
 		wait(0.5)
 
-		MessageLog.printToLog("[INFO] Device dimensions: ${MediaProjectionService.displayHeight}x${MediaProjectionService.displayWidth}\n", tag)
+		MessageLog.printToLog("[INFO] Device dimensions: ${SharedData.displayHeight}x${SharedData.displayWidth}\n", tag)
 
 		gestureUtils.tap(550.0, 2060.0)
 
