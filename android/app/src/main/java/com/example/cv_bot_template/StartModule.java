@@ -24,12 +24,15 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.steve1316.automation_library.events.JSEvent;
 import com.steve1316.automation_library.events.StartEvent;
+import com.steve1316.automation_library.events.ExceptionEvent;
 import com.steve1316.automation_library.utils.MediaProjectionService;
+import com.steve1316.automation_library.utils.MessageLog;
 import com.steve1316.automation_library.utils.MyAccessibilityService;
 import com.steve1316.automation_library.utils.TwitterUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.SubscriberExceptionEvent;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.channel.PrivateChannel;
@@ -43,7 +46,7 @@ import java.util.Queue;
 /**
  * Takes care of setting up internal processes such as the Accessibility and MediaProjection services, receiving and sending messages over to the
  * Javascript frontend, and handle tests involving Discord and Twitter API integrations if needed.
- *
+ * <p>
  * Loaded into the React PackageList via MainApplication's instantiation of the StartPackage.
  */
 public class StartModule extends ReactContextBaseJavaModule implements ActivityEventListener {
@@ -330,7 +333,13 @@ public class StartModule extends ReactContextBaseJavaModule implements ActivityE
             parser.initializeSettings(context);
 
             EntryPoint entryPoint = new EntryPoint(context);
-            entryPoint.start();
+
+            try {
+                entryPoint.start();
+            } catch (Exception e) {
+                Log.d(tag, e.toString());
+                EventBus.getDefault().postSticky(new ExceptionEvent(e));
+            }
         }
     }
 
@@ -359,5 +368,19 @@ public class StartModule extends ReactContextBaseJavaModule implements ActivityE
     @Subscribe
     public void onJSEvent(JSEvent event) {
         sendEvent(event.getEventName(), event.getMessage());
+    }
+
+    /**
+     * Listener function to send Exception messages back to the Javascript frontend.
+     *
+     * @param event The SubscriberExceptionEvent object to parse its event name and message.
+     */
+    @Subscribe
+    public void onSubscriberExceptionEvent(SubscriberExceptionEvent event) {
+        MessageLog.Companion.printToLog(event.throwable.toString(), loggerTag, false, true, false);
+        for (StackTraceElement line : event.throwable.getStackTrace()) {
+            MessageLog.Companion.printToLog("\t" + line.toString(), loggerTag, false, true, true);
+        }
+        MessageLog.Companion.printToLog("", loggerTag, false, false, true);
     }
 }
