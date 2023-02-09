@@ -308,7 +308,7 @@ dependencies {
     implementation("com.github.steve1316:android-cv-automation-library:1.1.12")
 
     //////// Project specific ////////
-
+    //implementation project(":automation_library")
 }
 
 if (isNewArchitectureEnabled()) {
